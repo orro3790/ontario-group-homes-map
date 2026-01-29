@@ -571,9 +571,9 @@
         const SUPABASE_URL = 'https://pmzjvwadzzqkdllesteb.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_gfFWOFTKVm3PVTTfjHg6wQ_NGRB9YXH';
 
-        let supabase;
+        let db;
         try {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         } catch (err) {
             console.error('Supabase init error:', err);
             alert('Error initializing app. Please check your connection.');
@@ -672,7 +672,7 @@
                 return;
             }
             try {
-                const { error } = await supabase.auth.signInWithPassword({ email, password });
+                const { error } = await db.auth.signInWithPassword({ email, password });
                 if (error) {
                     document.getElementById('login-error').textContent = error.message;
                 } else {
@@ -695,7 +695,7 @@
                 return;
             }
             try {
-                const { error } = await supabase.auth.signUp({ email, password });
+                const { error } = await db.auth.signUp({ email, password });
                 if (error) {
                     document.getElementById('signup-error').textContent = error.message;
                 } else {
@@ -708,12 +708,12 @@
         }
 
         async function handleLogout() {
-            await supabase.auth.signOut();
+            await db.auth.signOut();
             location.reload();
         }
 
         async function checkAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await db.auth.getSession();
             if (session) showApp();
         }
 
@@ -723,7 +723,7 @@
             showLoading();
 
             try {
-                const { data: { user } } = await supabase.auth.getUser();
+                const { data: { user } } = await db.auth.getUser();
                 document.getElementById('user-email').textContent = user?.email || '';
 
                 await loadData();
@@ -741,8 +741,8 @@
         // ============================================
         async function loadData() {
             const [leadsRes, activitiesRes] = await Promise.all([
-                supabase.from('leads').select('*').order('score', { ascending: false }),
-                supabase.from('activities').select('*').order('created_at', { ascending: false })
+                db.from('leads').select('*').order('score', { ascending: false }),
+                db.from('activities').select('*').order('created_at', { ascending: false })
             ]);
 
             if (leadsRes.error) {
@@ -921,7 +921,7 @@
 
         async function completeTask(taskId) {
             try {
-                const { error } = await supabase.from('activities').update({
+                const { error } = await db.from('activities').update({
                     completed: true,
                     completed_at: new Date().toISOString()
                 }).eq('id', taskId);
@@ -1033,7 +1033,7 @@
             };
 
             try {
-                const { error } = await supabase.from('leads').update(updates).eq('id', currentLeadId);
+                const { error } = await db.from('leads').update(updates).eq('id', currentLeadId);
                 if (error) throw error;
                 await loadData();
                 renderAll();
@@ -1061,7 +1061,7 @@
                 : null;
 
             try {
-                const { error } = await supabase.from('activities').insert({
+                const { error } = await db.from('activities').insert({
                     lead_id: currentLeadId,
                     type: pendingActivityType,
                     subject,
