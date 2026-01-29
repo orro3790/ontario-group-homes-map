@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Ontario Group Homes CRM</title>
+    <title>Intrepid</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -260,13 +260,60 @@
             #lead-panel { width: 100%; right: -100%; }
             .map-sidebar { width: 280px; }
         }
+
+        /* ==================== TOAST NOTIFICATIONS ==================== */
+        .toast-container {
+            position: fixed; bottom: 24px; right: 24px; z-index: 10000;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .toast {
+            padding: 14px 20px; border-radius: 8px; color: white;
+            font-size: 14px; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease;
+        }
+        .toast.success { background: #28a745; }
+        .toast.error { background: #dc3545; }
+        .toast.info { background: #17a2b8; }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* ==================== LOADING SPINNER ==================== */
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.8); z-index: 9998;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .spinner {
+            width: 40px; height: 40px; border: 4px solid #e1e5e9;
+            border-top-color: #667eea; border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-overlay.hidden { display: none; }
+
+        /* ==================== MODAL ==================== */
+        .modal {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); z-index: 10001;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .modal.hidden { display: none; }
+        .modal-content {
+            background: white; padding: 24px; border-radius: 12px;
+            width: 100%; max-width: 400px; box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .modal-content h3 { margin: 0 0 16px 0; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 20px; }
+        .modal-actions button { flex: 1; }
     </style>
 </head>
 <body>
     <!-- ==================== LOGIN SCREEN ==================== -->
     <div id="login-screen">
         <div class="login-box">
-            <h2>Ontario Group Homes CRM</h2>
+            <h2>Intrepid</h2>
             <p class="subtitle">Sign in to manage your leads</p>
             <div id="login-form">
                 <input type="email" id="email" placeholder="Email address" />
@@ -292,7 +339,7 @@
     <!-- ==================== MAIN APP ==================== -->
     <div id="app">
         <div class="top-bar">
-            <h1>Ontario Group Homes CRM</h1>
+            <h1>Intrepid</h1>
             <div class="top-bar-actions">
                 <span class="user-email" id="user-email"></span>
                 <button class="btn btn-secondary" onclick="exportCSV()">Export CSV</button>
@@ -490,6 +537,33 @@
         </div>
     </div>
 
+    <!-- ==================== TOAST CONTAINER ==================== -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- ==================== LOADING OVERLAY ==================== -->
+    <div class="loading-overlay hidden" id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- ==================== ACTIVITY MODAL ==================== -->
+    <div class="modal hidden" id="activity-modal">
+        <div class="modal-content">
+            <h3 id="modal-title">Log Activity</h3>
+            <div class="form-group">
+                <label>Subject</label>
+                <input type="text" id="modal-subject" placeholder="Enter subject..." />
+            </div>
+            <div class="form-group hidden" id="modal-duedate-group">
+                <label>Due Date</label>
+                <input type="date" id="modal-duedate" />
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="submitActivity()">Save</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ============================================
         // CONFIGURATION
@@ -521,6 +595,60 @@
         const PRIORITIES = ['low', 'medium', 'high', 'urgent'];
 
         // ============================================
+        // UTILITIES
+        // ============================================
+        function escapeHtml(text) {
+            if (text == null) return '';
+            const div = document.createElement('div');
+            div.textContent = String(text);
+            return div.innerHTML;
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function showLoading() {
+            document.getElementById('loading-overlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.add('hidden');
+        }
+
+        function debounce(fn, delay) {
+            let timeout;
+            return (...args) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => fn(...args), delay);
+            };
+        }
+
+        // Modal state
+        let pendingActivityType = null;
+
+        function openModal(type) {
+            pendingActivityType = type;
+            const typeLabels = { call: 'Log Call', email: 'Log Email', meeting: 'Log Meeting', task: 'Add Task', note: 'Add Note' };
+            document.getElementById('modal-title').textContent = typeLabels[type] || 'Log Activity';
+            document.getElementById('modal-subject').value = '';
+            document.getElementById('modal-duedate').value = '';
+            document.getElementById('modal-duedate-group').classList.toggle('hidden', type !== 'task');
+            document.getElementById('activity-modal').classList.remove('hidden');
+            document.getElementById('modal-subject').focus();
+        }
+
+        function closeModal() {
+            document.getElementById('activity-modal').classList.add('hidden');
+            pendingActivityType = null;
+        }
+
+        // ============================================
         // AUTH
         // ============================================
         function toggleSignup() {
@@ -531,25 +659,45 @@
         }
 
         async function handleLogin() {
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
-            const { error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) {
-                document.getElementById('login-error').textContent = error.message;
-            } else {
-                showApp();
+            if (!email || !password) {
+                document.getElementById('login-error').textContent = 'Please enter email and password';
+                return;
+            }
+            try {
+                const { error } = await supabase.auth.signInWithPassword({ email, password });
+                if (error) {
+                    document.getElementById('login-error').textContent = error.message;
+                } else {
+                    showApp();
+                }
+            } catch (err) {
+                document.getElementById('login-error').textContent = 'Connection error. Please try again.';
             }
         }
 
         async function handleSignup() {
-            const email = document.getElementById('signup-email').value;
+            const email = document.getElementById('signup-email').value.trim();
             const password = document.getElementById('signup-password').value;
-            const { error } = await supabase.auth.signUp({ email, password });
-            if (error) {
-                document.getElementById('signup-error').textContent = error.message;
-            } else {
-                document.getElementById('signup-error').style.color = '#28a745';
-                document.getElementById('signup-error').textContent = 'Check your email to confirm your account!';
+            if (!email || !password) {
+                document.getElementById('signup-error').textContent = 'Please enter email and password';
+                return;
+            }
+            if (password.length < 6) {
+                document.getElementById('signup-error').textContent = 'Password must be at least 6 characters';
+                return;
+            }
+            try {
+                const { error } = await supabase.auth.signUp({ email, password });
+                if (error) {
+                    document.getElementById('signup-error').textContent = error.message;
+                } else {
+                    document.getElementById('signup-error').style.color = '#28a745';
+                    document.getElementById('signup-error').textContent = 'Check your email to confirm your account!';
+                }
+            } catch (err) {
+                document.getElementById('signup-error').textContent = 'Connection error. Please try again.';
             }
         }
 
@@ -566,13 +714,20 @@
         async function showApp() {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app').style.display = 'block';
+            showLoading();
 
-            const { data: { user } } = await supabase.auth.getUser();
-            document.getElementById('user-email').textContent = user?.email || '';
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                document.getElementById('user-email').textContent = user?.email || '';
 
-            await loadData();
-            initMap();
-            renderAll();
+                await loadData();
+                initMap();
+                renderAll();
+            } catch (err) {
+                showToast('Error loading app. Please refresh.', 'error');
+            } finally {
+                hideLoading();
+            }
         }
 
         // ============================================
@@ -583,6 +738,16 @@
                 supabase.from('leads').select('*').order('score', { ascending: false }),
                 supabase.from('activities').select('*').order('created_at', { ascending: false })
             ]);
+
+            if (leadsRes.error) {
+                console.error('Error loading leads:', leadsRes.error);
+                showToast('Error loading leads', 'error');
+                return;
+            }
+            if (activitiesRes.error) {
+                console.error('Error loading activities:', activitiesRes.error);
+            }
+
             leads = leadsRes.data || [];
             activities = activitiesRes.data || [];
         }
@@ -622,12 +787,12 @@
             const priorityClass = lead.priority === 'high' || lead.priority === 'urgent' ? `priority-${lead.priority}` : '';
             const followup = lead.next_followup ? formatFollowup(lead.next_followup) : '';
             return `
-                <div class="lead-card ${priorityClass}" onclick="openLead(${lead.id})">
-                    <div class="name">${lead.name}</div>
-                    <div class="city">${lead.city || 'Unknown'}</div>
+                <div class="lead-card ${priorityClass}" onclick="openLead(${parseInt(lead.id)})" role="button" tabindex="0">
+                    <div class="name">${escapeHtml(lead.name)}</div>
+                    <div class="city">${escapeHtml(lead.city) || 'Unknown'}</div>
                     <div class="meta">
-                        <span class="score ${scoreClass}">${lead.score}</span>
-                        ${followup ? `<span class="followup ${isOverdue(lead.next_followup) ? 'overdue' : ''}">${followup}</span>` : ''}
+                        <span class="score ${scoreClass}">${parseInt(lead.score) || 0}</span>
+                        ${followup ? `<span class="followup ${isOverdue(lead.next_followup) ? 'overdue' : ''}">${escapeHtml(followup)}</span>` : ''}
                     </div>
                 </div>
             `;
@@ -737,11 +902,11 @@
                     const overdue = task.due_date && isOverdue(task.due_date);
                     return `
                         <div class="task-item">
-                            <input type="checkbox" class="task-checkbox" onchange="completeTask(${task.id})" />
+                            <input type="checkbox" class="task-checkbox" onchange="completeTask(${parseInt(task.id)})" aria-label="Mark task complete" />
                             <div class="task-info">
-                                <div class="subject">${task.subject}</div>
-                                <div class="lead-name" onclick="openLead(${task.lead_id})">${lead?.name || 'Unknown'}</div>
-                                ${task.due_date ? `<div class="due-date ${overdue ? 'overdue' : ''}">Due: ${task.due_date}</div>` : ''}
+                                <div class="subject">${escapeHtml(task.subject)}</div>
+                                <div class="lead-name" onclick="openLead(${parseInt(task.lead_id)})">${escapeHtml(lead?.name) || 'Unknown'}</div>
+                                ${task.due_date ? `<div class="due-date ${overdue ? 'overdue' : ''}">Due: ${escapeHtml(task.due_date)}</div>` : ''}
                             </div>
                         </div>
                     `;
@@ -749,14 +914,21 @@
         }
 
         async function completeTask(taskId) {
-            await supabase.from('activities').update({
-                completed: true,
-                completed_at: new Date().toISOString()
-            }).eq('id', taskId);
-            await loadData();
-            renderTasks();
-            updateStats();
-            if (currentLeadId) renderTimeline(currentLeadId);
+            try {
+                const { error } = await supabase.from('activities').update({
+                    completed: true,
+                    completed_at: new Date().toISOString()
+                }).eq('id', taskId);
+                if (error) throw error;
+                await loadData();
+                renderTasks();
+                updateStats();
+                if (currentLeadId) renderTimeline(currentLeadId);
+                showToast('Task completed', 'success');
+            } catch (err) {
+                console.error('Complete task error:', err);
+                showToast('Error completing task', 'error');
+            }
         }
 
         // ============================================
@@ -780,13 +952,13 @@
             }
             document.getElementById('all-leads-count').textContent = filtered.length;
             document.getElementById('all-leads-list').innerHTML = filtered.map(lead => `
-                <div class="task-item" onclick="openLead(${lead.id})" style="cursor: pointer;">
-                    <div style="width: 10px; height: 10px; border-radius: 50%; background: ${STATUS_COLORS[lead.status]};"></div>
+                <div class="task-item" onclick="openLead(${parseInt(lead.id)})" style="cursor: pointer;" role="button" tabindex="0">
+                    <div style="width: 10px; height: 10px; border-radius: 50%; background: ${STATUS_COLORS[lead.status] || '#6c757d'};"></div>
                     <div class="task-info">
-                        <div class="subject">${lead.name}</div>
-                        <div class="due-date">${lead.city || ''} | ${lead.phone || 'No phone'} | Score: ${lead.score}</div>
+                        <div class="subject">${escapeHtml(lead.name)}</div>
+                        <div class="due-date">${escapeHtml(lead.city) || ''} | ${escapeHtml(lead.phone) || 'No phone'} | Score: ${parseInt(lead.score) || 0}</div>
                     </div>
-                    <div style="font-size: 12px; color: #666;">${STATUS_LABELS[lead.status]}</div>
+                    <div style="font-size: 12px; color: #666;">${escapeHtml(STATUS_LABELS[lead.status])}</div>
                 </div>
             `).join('');
         }
@@ -831,10 +1003,10 @@
                 ? '<p style="color: #666; font-size: 13px;">No activities yet</p>'
                 : leadActivities.map(a => `
                     <div class="timeline-item">
-                        <div class="timeline-icon ${a.type}">${icons[a.type]}</div>
+                        <div class="timeline-icon ${escapeHtml(a.type)}">${icons[a.type] || '📋'}</div>
                         <div class="timeline-content">
-                            <div class="subject">${a.subject}${a.completed ? ' ✓' : ''}</div>
-                            ${a.description ? `<div class="description">${a.description}</div>` : ''}
+                            <div class="subject">${escapeHtml(a.subject)}${a.completed ? ' ✓' : ''}</div>
+                            ${a.description ? `<div class="description">${escapeHtml(a.description)}</div>` : ''}
                             <div class="time">${new Date(a.created_at).toLocaleDateString()}</div>
                         </div>
                     </div>
@@ -844,41 +1016,63 @@
         async function saveLead() {
             if (!currentLeadId) return;
             const updates = {
-                contact_name: document.getElementById('panel-contact-name').value,
-                contact_role: document.getElementById('panel-contact-role').value,
-                contact_email: document.getElementById('panel-contact-email').value,
+                contact_name: document.getElementById('panel-contact-name').value.trim(),
+                contact_role: document.getElementById('panel-contact-role').value.trim(),
+                contact_email: document.getElementById('panel-contact-email').value.trim(),
                 status: document.getElementById('panel-status').value,
                 priority: document.getElementById('panel-priority').value,
                 next_followup: document.getElementById('panel-followup').value || null,
                 estimated_value: document.getElementById('panel-value').value || null,
-                notes: document.getElementById('panel-notes').value
+                notes: document.getElementById('panel-notes').value.trim()
             };
-            await supabase.from('leads').update(updates).eq('id', currentLeadId);
-            await loadData();
-            renderAll();
-            alert('Saved!');
+
+            try {
+                const { error } = await supabase.from('leads').update(updates).eq('id', currentLeadId);
+                if (error) throw error;
+                await loadData();
+                renderAll();
+                showToast('Changes saved', 'success');
+            } catch (err) {
+                console.error('Save error:', err);
+                showToast('Error saving changes', 'error');
+            }
         }
 
-        async function logActivity(type) {
+        function logActivity(type) {
             if (!currentLeadId) return;
-            const subject = prompt(`Enter ${type} subject:`);
-            if (!subject) return;
+            openModal(type);
+        }
 
-            let dueDate = null;
-            if (type === 'task') {
-                dueDate = prompt('Due date (YYYY-MM-DD):');
+        async function submitActivity() {
+            const subject = document.getElementById('modal-subject').value.trim();
+            if (!subject) {
+                showToast('Please enter a subject', 'error');
+                return;
             }
 
-            await supabase.from('activities').insert({
-                lead_id: currentLeadId,
-                type,
-                subject,
-                due_date: dueDate
-            });
-            await loadData();
-            renderTimeline(currentLeadId);
-            renderTasks();
-            updateStats();
+            const dueDate = pendingActivityType === 'task'
+                ? document.getElementById('modal-duedate').value || null
+                : null;
+
+            try {
+                const { error } = await supabase.from('activities').insert({
+                    lead_id: currentLeadId,
+                    type: pendingActivityType,
+                    subject,
+                    due_date: dueDate
+                });
+                if (error) throw error;
+
+                closeModal();
+                await loadData();
+                renderTimeline(currentLeadId);
+                renderTasks();
+                updateStats();
+                showToast('Activity logged', 'success');
+            } catch (err) {
+                console.error('Activity error:', err);
+                showToast('Error logging activity', 'error');
+            }
         }
 
         // ============================================
@@ -892,12 +1086,14 @@
             ].map(v => `"${(v || '').toString().replace(/"/g, '""')}"`).join(','));
 
             const csv = [headers.join(','), ...rows].join('\n');
-            const blob = new Blob([csv], { type: 'text/csv' });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             a.download = `leads_export_${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
+            setTimeout(() => URL.revokeObjectURL(url), 100);
+            showToast('Export downloaded', 'success');
         }
 
         // ============================================
@@ -913,6 +1109,42 @@
                     setTimeout(() => map?.invalidateSize(), 100);
                 }
             });
+        });
+
+        // ============================================
+        // KEYBOARD SUPPORT
+        // ============================================
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (!document.getElementById('activity-modal').classList.contains('hidden')) {
+                    closeModal();
+                } else if (document.getElementById('lead-panel').classList.contains('open')) {
+                    closePanel();
+                }
+            }
+            // Enter to submit in modal
+            if (e.key === 'Enter' && !document.getElementById('activity-modal').classList.contains('hidden')) {
+                submitActivity();
+            }
+        });
+
+        // Debounced search handlers
+        const debouncedMapSearch = debounce((value) => {
+            filters.search = value.toLowerCase();
+            renderMap();
+        }, 300);
+
+        const debouncedAllLeadsSearch = debounce((value) => {
+            allLeadsSearch = value.toLowerCase();
+            renderAllLeads();
+        }, 300);
+
+        // Override the inline handlers
+        document.addEventListener('DOMContentLoaded', () => {
+            const mapSearch = document.getElementById('search-input');
+            if (mapSearch) {
+                mapSearch.oninput = (e) => debouncedMapSearch(e.target.value);
+            }
         });
 
         // ============================================
