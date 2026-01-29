@@ -571,7 +571,13 @@
         const SUPABASE_URL = 'https://pmzjvwadzzqkdllesteb.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_gfFWOFTKVm3PVTTfjHg6wQ_NGRB9YXH';
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let supabase;
+        try {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch (err) {
+            console.error('Supabase init error:', err);
+            alert('Error initializing app. Please check your connection.');
+        }
 
         // ============================================
         // STATE
