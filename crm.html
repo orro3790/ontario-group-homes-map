@@ -569,15 +569,9 @@
         // CONFIGURATION
         // ============================================
         const SUPABASE_URL = 'https://pmzjvwadzzqkdllesteb.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_gfFWOFTKVm3PVTTfjHg6wQ_NGRB9YXH';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBtemp2d2Fkenpxa2RsbGVzdGViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NTk2ODksImV4cCI6MjA4NTIzNTY4OX0.vEhQtuehvYijhAEkGrm_O2csrzVz8RxmhW6cP5jcKT4';
 
-        let db;
-        try {
-            db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        } catch (err) {
-            console.error('Supabase init error:', err);
-            alert('Error initializing app. Please check your connection.');
-        }
+        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ============================================
         // STATE
