@@ -1,0 +1,3 @@
+import_to_supabase.py
+*.csv
+*.json

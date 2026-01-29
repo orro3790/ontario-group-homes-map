@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ontario Group Homes CRM</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; }
+
+        /* ==================== LOGIN ==================== */
+        #login-screen {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex; align-items: center; justify-content: center; z-index: 9999;
+        }
+        .login-box {
+            background: white; padding: 40px; border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); width: 100%; max-width: 400px;
+        }
+        .login-box h2 { margin-bottom: 8px; color: #1a1a2e; }
+        .login-box .subtitle { color: #666; font-size: 14px; margin-bottom: 30px; }
+        .login-box input {
+            width: 100%; padding: 14px 16px; margin-bottom: 16px;
+            border: 2px solid #e1e5e9; border-radius: 8px; font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        .login-box input:focus { outline: none; border-color: #667eea; }
+        .login-box button {
+            width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white; border: none; border-radius: 8px; font-size: 15px;
+            font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .login-box button:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(102,126,234,0.4); }
+        .login-error { color: #dc3545; font-size: 13px; margin-top: 12px; text-align: center; }
+        .login-toggle { text-align: center; margin-top: 20px; font-size: 13px; color: #666; }
+        .login-toggle a { color: #667eea; cursor: pointer; font-weight: 500; }
+
+        /* ==================== MAIN LAYOUT ==================== */
+        #app { display: none; height: 100vh; }
+        .top-bar {
+            height: 56px; background: linear-gradient(135deg, #1a1a2e, #16213e);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .top-bar h1 { color: white; font-size: 18px; font-weight: 600; }
+        .top-bar-actions { display: flex; gap: 12px; align-items: center; }
+        .top-bar .user-email { color: rgba(255,255,255,0.7); font-size: 13px; }
+        .btn { padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5a6fd6; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-danger:hover { background: #c82333; }
+        .btn-secondary { background: #e1e5e9; color: #333; }
+        .btn-secondary:hover { background: #d1d5d9; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; }
+
+        /* ==================== TABS ==================== */
+        .tabs {
+            display: flex; background: white; border-bottom: 1px solid #e1e5e9;
+            padding: 0 24px;
+        }
+        .tab {
+            padding: 16px 24px; font-size: 14px; font-weight: 500; color: #666;
+            cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s;
+        }
+        .tab:hover { color: #333; }
+        .tab.active { color: #667eea; border-bottom-color: #667eea; }
+
+        /* ==================== CONTENT AREA ==================== */
+        .content { display: flex; height: calc(100vh - 56px - 53px); }
+        .tab-content { display: none; width: 100%; }
+        .tab-content.active { display: flex; }
+
+        /* ==================== PIPELINE VIEW ==================== */
+        .pipeline {
+            display: flex; gap: 16px; padding: 24px; overflow-x: auto; width: 100%;
+        }
+        .pipeline-column {
+            min-width: 280px; max-width: 280px; background: #f8f9fa;
+            border-radius: 12px; display: flex; flex-direction: column; max-height: 100%;
+        }
+        .pipeline-header {
+            padding: 16px; border-bottom: 1px solid #e1e5e9;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .pipeline-header h3 { font-size: 14px; font-weight: 600; color: #333; }
+        .pipeline-count {
+            background: #e1e5e9; padding: 2px 8px; border-radius: 10px;
+            font-size: 12px; font-weight: 600; color: #666;
+        }
+        .pipeline-cards { padding: 12px; overflow-y: auto; flex: 1; }
+        .lead-card {
+            background: white; border-radius: 8px; padding: 14px;
+            margin-bottom: 10px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea; transition: all 0.2s;
+        }
+        .lead-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateY(-2px); }
+        .lead-card.priority-high { border-left-color: #fd7e14; }
+        .lead-card.priority-urgent { border-left-color: #dc3545; }
+        .lead-card .name { font-weight: 600; font-size: 14px; color: #333; margin-bottom: 4px; }
+        .lead-card .city { font-size: 12px; color: #666; margin-bottom: 8px; }
+        .lead-card .meta { display: flex; justify-content: space-between; align-items: center; }
+        .lead-card .score {
+            font-size: 11px; font-weight: 600; padding: 2px 6px;
+            border-radius: 4px; background: #e8f5e9; color: #2e7d32;
+        }
+        .lead-card .score.medium { background: #fff3e0; color: #e65100; }
+        .lead-card .score.low { background: #ffebee; color: #c62828; }
+        .lead-card .followup {
+            font-size: 11px; color: #666; display: flex; align-items: center; gap: 4px;
+        }
+        .lead-card .followup.overdue { color: #dc3545; font-weight: 500; }
+
+        /* ==================== MAP VIEW ==================== */
+        #map-container { display: flex; width: 100%; }
+        #map { flex: 1; }
+        .map-sidebar {
+            width: 350px; background: white; border-left: 1px solid #e1e5e9;
+            display: flex; flex-direction: column;
+        }
+        .sidebar-section { padding: 20px; border-bottom: 1px solid #e1e5e9; }
+        .sidebar-section h3 { font-size: 14px; font-weight: 600; color: #333; margin-bottom: 12px; }
+
+        /* ==================== FILTERS ==================== */
+        .filters { display: flex; flex-wrap: wrap; gap: 8px; }
+        .filter-chip {
+            padding: 6px 12px; border-radius: 20px; font-size: 12px;
+            border: 1px solid #e1e5e9; background: white; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-chip:hover { border-color: #667eea; }
+        .filter-chip.active { background: #667eea; color: white; border-color: #667eea; }
+
+        /* ==================== SEARCH ==================== */
+        .search-box {
+            position: relative; margin-bottom: 16px;
+        }
+        .search-box input {
+            width: 100%; padding: 12px 16px 12px 40px; border: 2px solid #e1e5e9;
+            border-radius: 8px; font-size: 14px;
+        }
+        .search-box input:focus { outline: none; border-color: #667eea; }
+        .search-box::before {
+            content: "🔍"; position: absolute; left: 14px; top: 50%;
+            transform: translateY(-50%); font-size: 14px;
+        }
+
+        /* ==================== LEAD DETAIL PANEL ==================== */
+        #lead-panel {
+            position: fixed; right: -500px; top: 0; bottom: 0; width: 500px;
+            background: white; box-shadow: -5px 0 30px rgba(0,0,0,0.15);
+            z-index: 1000; transition: right 0.3s ease; display: flex; flex-direction: column;
+        }
+        #lead-panel.open { right: 0; }
+        .panel-header {
+            padding: 20px 24px; border-bottom: 1px solid #e1e5e9;
+            display: flex; justify-content: space-between; align-items: flex-start;
+        }
+        .panel-close {
+            background: none; border: none; font-size: 24px; cursor: pointer;
+            color: #666; padding: 0; line-height: 1;
+        }
+        .panel-close:hover { color: #333; }
+        .panel-title { font-size: 20px; font-weight: 600; color: #333; }
+        .panel-subtitle { font-size: 13px; color: #666; margin-top: 4px; }
+        .panel-body { flex: 1; overflow-y: auto; }
+        .panel-section { padding: 20px 24px; border-bottom: 1px solid #e1e5e9; }
+        .panel-section h4 {
+            font-size: 12px; font-weight: 600; color: #666;
+            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;
+        }
+
+        /* ==================== FORM ELEMENTS ==================== */
+        .form-row { display: flex; gap: 12px; margin-bottom: 16px; }
+        .form-group { flex: 1; }
+        .form-group label { display: block; font-size: 12px; font-weight: 500; color: #666; margin-bottom: 6px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 10px 12px; border: 2px solid #e1e5e9;
+            border-radius: 6px; font-size: 13px; transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: #667eea;
+        }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+
+        /* ==================== ACTIVITY TIMELINE ==================== */
+        .activity-form { display: flex; gap: 8px; margin-bottom: 16px; }
+        .activity-form select { width: 120px; }
+        .activity-form input { flex: 1; }
+        .timeline { }
+        .timeline-item {
+            display: flex; gap: 12px; padding: 12px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        .timeline-icon {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; flex-shrink: 0;
+        }
+        .timeline-icon.call { background: #e3f2fd; }
+        .timeline-icon.email { background: #fce4ec; }
+        .timeline-icon.meeting { background: #e8f5e9; }
+        .timeline-icon.note { background: #fff3e0; }
+        .timeline-icon.task { background: #f3e5f5; }
+        .timeline-content { flex: 1; }
+        .timeline-content .subject { font-weight: 500; font-size: 13px; color: #333; }
+        .timeline-content .description { font-size: 12px; color: #666; margin-top: 2px; }
+        .timeline-content .time { font-size: 11px; color: #999; margin-top: 4px; }
+
+        /* ==================== TASKS VIEW ==================== */
+        .tasks-container { padding: 24px; width: 100%; max-width: 800px; margin: 0 auto; }
+        .task-item {
+            background: white; border-radius: 8px; padding: 16px;
+            margin-bottom: 12px; display: flex; align-items: center; gap: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .task-checkbox { width: 20px; height: 20px; cursor: pointer; }
+        .task-info { flex: 1; }
+        .task-info .subject { font-weight: 500; color: #333; }
+        .task-info .lead-name { font-size: 12px; color: #667eea; cursor: pointer; }
+        .task-info .due-date { font-size: 12px; color: #666; }
+        .task-info .due-date.overdue { color: #dc3545; font-weight: 500; }
+        .task-item.completed { opacity: 0.6; }
+        .task-item.completed .subject { text-decoration: line-through; }
+
+        /* ==================== STATS ==================== */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+        .stat-card {
+            background: white; padding: 16px; border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .stat-card .value { font-size: 28px; font-weight: 700; color: #333; }
+        .stat-card .label { font-size: 12px; color: #666; margin-top: 4px; }
+
+        /* ==================== QUICK ACTIONS ==================== */
+        .quick-actions { display: flex; gap: 8px; margin-top: 12px; }
+        .quick-action {
+            flex: 1; padding: 10px; border: 2px solid #e1e5e9; border-radius: 8px;
+            background: white; cursor: pointer; text-align: center; transition: all 0.2s;
+        }
+        .quick-action:hover { border-color: #667eea; background: #f8f9ff; }
+        .quick-action .icon { font-size: 20px; margin-bottom: 4px; }
+        .quick-action .label { font-size: 11px; color: #666; }
+
+        /* ==================== OVERLAY ==================== */
+        .overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); z-index: 999; display: none;
+        }
+        .overlay.open { display: block; }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .pipeline-column { min-width: 260px; }
+            #lead-panel { width: 100%; right: -100%; }
+            .map-sidebar { width: 280px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ==================== LOGIN SCREEN ==================== -->
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>Ontario Group Homes CRM</h2>
+            <p class="subtitle">Sign in to manage your leads</p>
+            <div id="login-form">
+                <input type="email" id="email" placeholder="Email address" />
+                <input type="password" id="password" placeholder="Password" />
+                <button onclick="handleLogin()">Sign In</button>
+                <div class="login-toggle">
+                    Don't have an account? <a onclick="toggleSignup()">Sign up</a>
+                </div>
+                <div id="login-error" class="login-error"></div>
+            </div>
+            <div id="signup-form" style="display: none;">
+                <input type="email" id="signup-email" placeholder="Email address" />
+                <input type="password" id="signup-password" placeholder="Password (min 6 characters)" />
+                <button onclick="handleSignup()">Create Account</button>
+                <div class="login-toggle">
+                    Already have an account? <a onclick="toggleSignup()">Sign in</a>
+                </div>
+                <div id="signup-error" class="login-error"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MAIN APP ==================== -->
+    <div id="app">
+        <div class="top-bar">
+            <h1>Ontario Group Homes CRM</h1>
+            <div class="top-bar-actions">
+                <span class="user-email" id="user-email"></span>
+                <button class="btn btn-secondary" onclick="exportCSV()">Export CSV</button>
+                <button class="btn btn-danger" onclick="handleLogout()">Sign Out</button>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="pipeline">Pipeline</div>
+            <div class="tab" data-tab="map">Map View</div>
+            <div class="tab" data-tab="tasks">Tasks</div>
+            <div class="tab" data-tab="all">All Leads</div>
+        </div>
+
+        <div class="content">
+            <!-- PIPELINE VIEW -->
+            <div class="tab-content active" id="tab-pipeline">
+                <div class="pipeline" id="pipeline"></div>
+            </div>
+
+            <!-- MAP VIEW -->
+            <div class="tab-content" id="tab-map">
+                <div id="map-container">
+                    <div id="map"></div>
+                    <div class="map-sidebar">
+                        <div class="sidebar-section">
+                            <div class="search-box">
+                                <input type="text" id="search-input" placeholder="Search leads..." oninput="handleSearch(this.value)" />
+                            </div>
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="value" id="stat-total">0</div>
+                                    <div class="label">Total Leads</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="value" id="stat-contacted">0</div>
+                                    <div class="label">Contacted</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="value" id="stat-won">0</div>
+                                    <div class="label">Won</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="value" id="stat-tasks">0</div>
+                                    <div class="label">Open Tasks</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sidebar-section">
+                            <h3>Filter by Status</h3>
+                            <div class="filters" id="status-filters"></div>
+                        </div>
+                        <div class="sidebar-section">
+                            <h3>Filter by Priority</h3>
+                            <div class="filters" id="priority-filters"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TASKS VIEW -->
+            <div class="tab-content" id="tab-tasks">
+                <div class="tasks-container">
+                    <h2 style="margin-bottom: 20px;">Open Tasks</h2>
+                    <div id="tasks-list"></div>
+                </div>
+            </div>
+
+            <!-- ALL LEADS VIEW -->
+            <div class="tab-content" id="tab-all">
+                <div class="tasks-container" style="max-width: 1200px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2>All Leads (<span id="all-leads-count">0</span>)</h2>
+                        <div class="search-box" style="margin: 0; width: 300px;">
+                            <input type="text" placeholder="Search..." oninput="handleAllLeadsSearch(this.value)" />
+                        </div>
+                    </div>
+                    <div id="all-leads-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== LEAD DETAIL PANEL ==================== -->
+    <div class="overlay" id="overlay" onclick="closePanel()"></div>
+    <div id="lead-panel">
+        <div class="panel-header">
+            <div>
+                <div class="panel-title" id="panel-name">Lead Name</div>
+                <div class="panel-subtitle" id="panel-address">Address</div>
+            </div>
+            <button class="panel-close" onclick="closePanel()">&times;</button>
+        </div>
+        <div class="panel-body">
+            <!-- Contact Info -->
+            <div class="panel-section">
+                <h4>Contact Information</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" id="panel-phone" readonly style="background: #f8f9fa;" />
+                    </div>
+                    <div class="form-group">
+                        <label>Score</label>
+                        <input type="text" id="panel-score" readonly style="background: #f8f9fa;" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Contact Name</label>
+                        <input type="text" id="panel-contact-name" placeholder="Decision maker name" />
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Role</label>
+                        <input type="text" id="panel-contact-role" placeholder="e.g. Manager, Owner" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Contact Email</label>
+                    <input type="email" id="panel-contact-email" placeholder="email@example.com" />
+                </div>
+            </div>
+
+            <!-- Status & Priority -->
+            <div class="panel-section">
+                <h4>Status</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Pipeline Stage</label>
+                        <select id="panel-status">
+                            <option value="new">New</option>
+                            <option value="contacted">Contacted</option>
+                            <option value="qualified">Qualified</option>
+                            <option value="proposal">Proposal Sent</option>
+                            <option value="negotiation">Negotiation</option>
+                            <option value="won">Won</option>
+                            <option value="lost">Lost</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Priority</label>
+                        <select id="panel-priority">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Next Follow-up</label>
+                        <input type="date" id="panel-followup" />
+                    </div>
+                    <div class="form-group">
+                        <label>Estimated Value ($)</label>
+                        <input type="number" id="panel-value" placeholder="0.00" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="panel-notes" placeholder="Add notes about this lead..."></textarea>
+                </div>
+                <button class="btn btn-success" style="width: 100%;" onclick="saveLead()">Save Changes</button>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="panel-section">
+                <h4>Quick Actions</h4>
+                <div class="quick-actions">
+                    <div class="quick-action" onclick="logActivity('call')">
+                        <div class="icon">📞</div>
+                        <div class="label">Log Call</div>
+                    </div>
+                    <div class="quick-action" onclick="logActivity('email')">
+                        <div class="icon">📧</div>
+                        <div class="label">Log Email</div>
+                    </div>
+                    <div class="quick-action" onclick="logActivity('meeting')">
+                        <div class="icon">🤝</div>
+                        <div class="label">Log Meeting</div>
+                    </div>
+                    <div class="quick-action" onclick="logActivity('task')">
+                        <div class="icon">✅</div>
+                        <div class="label">Add Task</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Timeline -->
+            <div class="panel-section">
+                <h4>Activity History</h4>
+                <div class="timeline" id="panel-timeline"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        const SUPABASE_URL = 'https://pmzjvwadzzqkdllesteb.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_gfFWOFTKVm3PVTTfjHg6wQ_NGRB9YXH';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ============================================
+        // STATE
+        // ============================================
+        let leads = [];
+        let activities = [];
+        let markers = {};
+        let map;
+        let currentLeadId = null;
+        let filters = { status: 'all', priority: 'all', search: '' };
+
+        const STATUSES = ['new', 'contacted', 'qualified', 'proposal', 'negotiation', 'won', 'lost'];
+        const STATUS_LABELS = {
+            new: 'New', contacted: 'Contacted', qualified: 'Qualified',
+            proposal: 'Proposal', negotiation: 'Negotiation', won: 'Won', lost: 'Lost'
+        };
+        const STATUS_COLORS = {
+            new: '#6c757d', contacted: '#17a2b8', qualified: '#ffc107',
+            proposal: '#fd7e14', negotiation: '#6f42c1', won: '#28a745', lost: '#dc3545'
+        };
+        const PRIORITIES = ['low', 'medium', 'high', 'urgent'];
+
+        // ============================================
+        // AUTH
+        // ============================================
+        function toggleSignup() {
+            document.getElementById('login-form').style.display =
+                document.getElementById('login-form').style.display === 'none' ? 'block' : 'none';
+            document.getElementById('signup-form').style.display =
+                document.getElementById('signup-form').style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) {
+                document.getElementById('login-error').textContent = error.message;
+            } else {
+                showApp();
+            }
+        }
+
+        async function handleSignup() {
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const { error } = await supabase.auth.signUp({ email, password });
+            if (error) {
+                document.getElementById('signup-error').textContent = error.message;
+            } else {
+                document.getElementById('signup-error').style.color = '#28a745';
+                document.getElementById('signup-error').textContent = 'Check your email to confirm your account!';
+            }
+        }
+
+        async function handleLogout() {
+            await supabase.auth.signOut();
+            location.reload();
+        }
+
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) showApp();
+        }
+
+        async function showApp() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+
+            const { data: { user } } = await supabase.auth.getUser();
+            document.getElementById('user-email').textContent = user?.email || '';
+
+            await loadData();
+            initMap();
+            renderAll();
+        }
+
+        // ============================================
+        // DATA
+        // ============================================
+        async function loadData() {
+            const [leadsRes, activitiesRes] = await Promise.all([
+                supabase.from('leads').select('*').order('score', { ascending: false }),
+                supabase.from('activities').select('*').order('created_at', { ascending: false })
+            ]);
+            leads = leadsRes.data || [];
+            activities = activitiesRes.data || [];
+        }
+
+        // ============================================
+        // RENDERING
+        // ============================================
+        function renderAll() {
+            renderPipeline();
+            renderMap();
+            renderTasks();
+            renderAllLeads();
+            renderFilters();
+            updateStats();
+        }
+
+        function renderPipeline() {
+            const container = document.getElementById('pipeline');
+            container.innerHTML = STATUSES.filter(s => s !== 'lost').map(status => {
+                const statusLeads = getFilteredLeads().filter(l => l.status === status);
+                return `
+                    <div class="pipeline-column">
+                        <div class="pipeline-header">
+                            <h3>${STATUS_LABELS[status]}</h3>
+                            <span class="pipeline-count">${statusLeads.length}</span>
+                        </div>
+                        <div class="pipeline-cards">
+                            ${statusLeads.map(lead => renderLeadCard(lead)).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderLeadCard(lead) {
+            const scoreClass = lead.score >= 45 ? '' : lead.score >= 35 ? 'medium' : 'low';
+            const priorityClass = lead.priority === 'high' || lead.priority === 'urgent' ? `priority-${lead.priority}` : '';
+            const followup = lead.next_followup ? formatFollowup(lead.next_followup) : '';
+            return `
+                <div class="lead-card ${priorityClass}" onclick="openLead(${lead.id})">
+                    <div class="name">${lead.name}</div>
+                    <div class="city">${lead.city || 'Unknown'}</div>
+                    <div class="meta">
+                        <span class="score ${scoreClass}">${lead.score}</span>
+                        ${followup ? `<span class="followup ${isOverdue(lead.next_followup) ? 'overdue' : ''}">${followup}</span>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function formatFollowup(date) {
+            const d = new Date(date);
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const diff = Math.ceil((d - today) / (1000 * 60 * 60 * 24));
+            if (diff < 0) return `${Math.abs(diff)}d overdue`;
+            if (diff === 0) return 'Today';
+            if (diff === 1) return 'Tomorrow';
+            return `In ${diff}d`;
+        }
+
+        function isOverdue(date) {
+            return new Date(date) < new Date().setHours(0,0,0,0);
+        }
+
+        function renderFilters() {
+            // Status filters
+            document.getElementById('status-filters').innerHTML = `
+                <div class="filter-chip ${filters.status === 'all' ? 'active' : ''}" onclick="setFilter('status', 'all')">All</div>
+                ${STATUSES.map(s => `
+                    <div class="filter-chip ${filters.status === s ? 'active' : ''}" onclick="setFilter('status', '${s}')">${STATUS_LABELS[s]}</div>
+                `).join('')}
+            `;
+            // Priority filters
+            document.getElementById('priority-filters').innerHTML = `
+                <div class="filter-chip ${filters.priority === 'all' ? 'active' : ''}" onclick="setFilter('priority', 'all')">All</div>
+                ${PRIORITIES.map(p => `
+                    <div class="filter-chip ${filters.priority === p ? 'active' : ''}" onclick="setFilter('priority', '${p}')">${p.charAt(0).toUpperCase() + p.slice(1)}</div>
+                `).join('')}
+            `;
+        }
+
+        function setFilter(type, value) {
+            filters[type] = value;
+            renderAll();
+        }
+
+        function handleSearch(value) {
+            filters.search = value.toLowerCase();
+            renderMap();
+        }
+
+        function getFilteredLeads() {
+            return leads.filter(l => {
+                if (filters.status !== 'all' && l.status !== filters.status) return false;
+                if (filters.priority !== 'all' && l.priority !== filters.priority) return false;
+                if (filters.search && !l.name.toLowerCase().includes(filters.search) &&
+                    !l.city?.toLowerCase().includes(filters.search)) return false;
+                return true;
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').textContent = leads.length;
+            document.getElementById('stat-contacted').textContent = leads.filter(l => l.status !== 'new').length;
+            document.getElementById('stat-won').textContent = leads.filter(l => l.status === 'won').length;
+            document.getElementById('stat-tasks').textContent = activities.filter(a => a.type === 'task' && !a.completed).length;
+        }
+
+        // ============================================
+        // MAP
+        // ============================================
+        function initMap() {
+            if (map) return;
+            map = L.map('map').setView([44.0, -79.5], 6);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+        }
+
+        function renderMap() {
+            Object.values(markers).forEach(m => map.removeLayer(m));
+            markers = {};
+            const filtered = getFilteredLeads();
+            filtered.forEach(lead => {
+                if (!lead.lat || !lead.lon) return;
+                const marker = L.circleMarker([lead.lat, lead.lon], {
+                    radius: 8,
+                    fillColor: STATUS_COLORS[lead.status] || '#6c757d',
+                    color: '#fff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                });
+                marker.on('click', () => openLead(lead.id));
+                marker.addTo(map);
+                markers[lead.id] = marker;
+            });
+        }
+
+        // ============================================
+        // TASKS
+        // ============================================
+        function renderTasks() {
+            const tasks = activities.filter(a => a.type === 'task' && !a.completed)
+                .sort((a, b) => new Date(a.due_date) - new Date(b.due_date));
+
+            document.getElementById('tasks-list').innerHTML = tasks.length === 0
+                ? '<p style="color: #666;">No open tasks</p>'
+                : tasks.map(task => {
+                    const lead = leads.find(l => l.id === task.lead_id);
+                    const overdue = task.due_date && isOverdue(task.due_date);
+                    return `
+                        <div class="task-item">
+                            <input type="checkbox" class="task-checkbox" onchange="completeTask(${task.id})" />
+                            <div class="task-info">
+                                <div class="subject">${task.subject}</div>
+                                <div class="lead-name" onclick="openLead(${task.lead_id})">${lead?.name || 'Unknown'}</div>
+                                ${task.due_date ? `<div class="due-date ${overdue ? 'overdue' : ''}">Due: ${task.due_date}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+        }
+
+        async function completeTask(taskId) {
+            await supabase.from('activities').update({
+                completed: true,
+                completed_at: new Date().toISOString()
+            }).eq('id', taskId);
+            await loadData();
+            renderTasks();
+            updateStats();
+            if (currentLeadId) renderTimeline(currentLeadId);
+        }
+
+        // ============================================
+        // ALL LEADS VIEW
+        // ============================================
+        let allLeadsSearch = '';
+
+        function handleAllLeadsSearch(value) {
+            allLeadsSearch = value.toLowerCase();
+            renderAllLeads();
+        }
+
+        function renderAllLeads() {
+            let filtered = leads;
+            if (allLeadsSearch) {
+                filtered = leads.filter(l =>
+                    l.name.toLowerCase().includes(allLeadsSearch) ||
+                    l.city?.toLowerCase().includes(allLeadsSearch) ||
+                    l.phone?.includes(allLeadsSearch)
+                );
+            }
+            document.getElementById('all-leads-count').textContent = filtered.length;
+            document.getElementById('all-leads-list').innerHTML = filtered.map(lead => `
+                <div class="task-item" onclick="openLead(${lead.id})" style="cursor: pointer;">
+                    <div style="width: 10px; height: 10px; border-radius: 50%; background: ${STATUS_COLORS[lead.status]};"></div>
+                    <div class="task-info">
+                        <div class="subject">${lead.name}</div>
+                        <div class="due-date">${lead.city || ''} | ${lead.phone || 'No phone'} | Score: ${lead.score}</div>
+                    </div>
+                    <div style="font-size: 12px; color: #666;">${STATUS_LABELS[lead.status]}</div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================
+        // LEAD PANEL
+        // ============================================
+        function openLead(id) {
+            currentLeadId = id;
+            const lead = leads.find(l => l.id === id);
+            if (!lead) return;
+
+            document.getElementById('panel-name').textContent = lead.name;
+            document.getElementById('panel-address').textContent = lead.address || 'No address';
+            document.getElementById('panel-phone').value = lead.phone || '';
+            document.getElementById('panel-score').value = lead.score;
+            document.getElementById('panel-contact-name').value = lead.contact_name || '';
+            document.getElementById('panel-contact-role').value = lead.contact_role || '';
+            document.getElementById('panel-contact-email').value = lead.contact_email || '';
+            document.getElementById('panel-status').value = lead.status;
+            document.getElementById('panel-priority').value = lead.priority || 'medium';
+            document.getElementById('panel-followup').value = lead.next_followup || '';
+            document.getElementById('panel-value').value = lead.estimated_value || '';
+            document.getElementById('panel-notes').value = lead.notes || '';
+
+            renderTimeline(id);
+
+            document.getElementById('overlay').classList.add('open');
+            document.getElementById('lead-panel').classList.add('open');
+        }
+
+        function closePanel() {
+            document.getElementById('overlay').classList.remove('open');
+            document.getElementById('lead-panel').classList.remove('open');
+            currentLeadId = null;
+        }
+
+        function renderTimeline(leadId) {
+            const leadActivities = activities.filter(a => a.lead_id === leadId);
+            const icons = { call: '📞', email: '📧', meeting: '🤝', note: '📝', task: '✅' };
+            document.getElementById('panel-timeline').innerHTML = leadActivities.length === 0
+                ? '<p style="color: #666; font-size: 13px;">No activities yet</p>'
+                : leadActivities.map(a => `
+                    <div class="timeline-item">
+                        <div class="timeline-icon ${a.type}">${icons[a.type]}</div>
+                        <div class="timeline-content">
+                            <div class="subject">${a.subject}${a.completed ? ' ✓' : ''}</div>
+                            ${a.description ? `<div class="description">${a.description}</div>` : ''}
+                            <div class="time">${new Date(a.created_at).toLocaleDateString()}</div>
+                        </div>
+                    </div>
+                `).join('');
+        }
+
+        async function saveLead() {
+            if (!currentLeadId) return;
+            const updates = {
+                contact_name: document.getElementById('panel-contact-name').value,
+                contact_role: document.getElementById('panel-contact-role').value,
+                contact_email: document.getElementById('panel-contact-email').value,
+                status: document.getElementById('panel-status').value,
+                priority: document.getElementById('panel-priority').value,
+                next_followup: document.getElementById('panel-followup').value || null,
+                estimated_value: document.getElementById('panel-value').value || null,
+                notes: document.getElementById('panel-notes').value
+            };
+            await supabase.from('leads').update(updates).eq('id', currentLeadId);
+            await loadData();
+            renderAll();
+            alert('Saved!');
+        }
+
+        async function logActivity(type) {
+            if (!currentLeadId) return;
+            const subject = prompt(`Enter ${type} subject:`);
+            if (!subject) return;
+
+            let dueDate = null;
+            if (type === 'task') {
+                dueDate = prompt('Due date (YYYY-MM-DD):');
+            }
+
+            await supabase.from('activities').insert({
+                lead_id: currentLeadId,
+                type,
+                subject,
+                due_date: dueDate
+            });
+            await loadData();
+            renderTimeline(currentLeadId);
+            renderTasks();
+            updateStats();
+        }
+
+        // ============================================
+        // EXPORT
+        // ============================================
+        function exportCSV() {
+            const headers = ['Name', 'Address', 'Phone', 'City', 'Score', 'Status', 'Priority', 'Contact', 'Email', 'Next Followup', 'Notes'];
+            const rows = leads.map(l => [
+                l.name, l.address, l.phone, l.city, l.score, l.status, l.priority,
+                l.contact_name, l.contact_email, l.next_followup, l.notes
+            ].map(v => `"${(v || '').toString().replace(/"/g, '""')}"`).join(','));
+
+            const csv = [headers.join(','), ...rows].join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `leads_export_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+        }
+
+        // ============================================
+        // TABS
+        // ============================================
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
+                if (tab.dataset.tab === 'map') {
+                    setTimeout(() => map?.invalidateSize(), 100);
+                }
+            });
+        });
+
+        // ============================================
+        // INIT
+        // ============================================
+        checkAuth();
+    </script>
+</body>
+</html>
