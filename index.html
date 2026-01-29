@@ -1,0 +1,3280 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ontario Group Homes & Mental Health Facilities</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        .info-box {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            max-width: 280px;
+        }
+        .info-box h3 { margin: 0 0 10px 0; font-size: 16px; }
+        .info-box p { margin: 5px 0; font-size: 13px; color: #666; }
+        .legend { margin-top: 10px; }
+        .legend-item { display: flex; align-items: center; margin: 5px 0; font-size: 12px; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; border: 1px solid #333; }
+        .green { background: green; }
+        .orange { background: orange; }
+        .red { background: red; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="info-box">
+        <h3>Ontario Group Homes</h3>
+        <p><strong>358</strong> facilities across Ontario</p>
+        <p>Click markers for details</p>
+        <div class="legend">
+            <div class="legend-item"><div class="legend-dot green"></div> High Confidence (score 45+)</div>
+            <div class="legend-item"><div class="legend-dot orange"></div> Medium (score 35-44)</div>
+            <div class="legend-item"><div class="legend-dot red"></div> Review Needed (score &lt;35)</div>
+        </div>
+        <p style="margin-top: 10px; font-size: 11px; color: #999;">
+            Data sources: HealthLine Ontario, Yellow Pages<br>
+            For pharmacy medication services outreach
+        </p>
+    </div>
+    <script>
+        var map = L.map('map').setView([44.03448004356696, -79.73396079650112], 6);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+    L.circleMarker([43.3510065, -79.8113274], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>AbleLiving Services - Thrive Group - Supportive Housing - Bethany Residence</b><br>2387 Industrial St, Burlington, ON  L7P 3A1<br>📞 905-335-3463<br>Score: 55<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.8953698, -76.0238153], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Victoria House - Adult Support/Group Home</b><br>27 Lombard St, Smiths Falls, ON  K7A 4E9<br>📞 613-284-5980<br>Score: 55<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.2916095, -75.8804752], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Shepherds of Good Hope - Hope Living Residence - Supportive Housing Program</b><br>145 Castlefrank Rd, Kanata, ON  K2L 3X9<br>📞 613-831-3333<br>Score: 55<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.4332286, -75.6910075], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Shepherds of Good Hope - St Andrew Residence - Supportive Housing Program</b><br>208 St Andrew St, Ottawa, ON  K1N 5G6<br>📞 613-789-8210<br>Score: 55<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.5835434, -79.9574023], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Millhouse Resthome - Halton Hills</b><br>14022 Third Line, Halton Hills, ON  L7J 2M1<br>📞 519-853-9773<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.628644, -80.0424156], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Millhouse Resthome - Acton</b><br>34 Mill St W, Acton, ON  L7J 1E0<br>📞 519-853-5306<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.6326265, -80.0349895], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>York House Acton Care Facility</b><br>160 York St, Acton, ON  L7J 1M4<br>📞 519-853-5953<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.6888134, -79.7619425], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Genesis Lodge</b><br>21 Church St E, Brampton, ON  L6V 1E8<br>📞 905-450-0277<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.1589484, -79.2522322], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Montebello Place</b><br>1 Montebello Place, St Catharines, ON  L2R 6B5<br>📞 905-984-6506<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.651927, -79.375048], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Pilot Place Society</b><br>70 Lombard St, Toronto, ON  M5C 2W2<br>📞 416-368-5832<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([42.6572594, -81.0118146], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Port Bruce Manor</b><br>3253 Levi St, Port Bruce, ON  N5H 2R2<br>📞 519-773-9320<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.0528391, -79.4587971], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Botsford Place</b><br>445 Botsford St, Newmarket, ON  L3Y 1T2<br>📞 905-895-3983<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.345103, -81.47784], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Walker Place</b><br>53 James St, Exeter, ON  N0M 1S7<br>📞 416-988-8838<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.1066762, -79.4217046], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Jay-Kare Lodge</b><br>908 Mount Albert Rd, Sharon, ON  L0G 1V0<br>📞 905-836-2606<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.0571437, -80.9277334], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Ayton Residential Lodge</b><br>1010 Victoria St, Ayton, ON  N0C 1C0<br>📞 519-665-7723<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.2161855, -79.4472105], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Hilltop Manor Retirement Residence</b><br>233 Glenwoods Ave, Keswick, ON  L4P 2W7<br>📞 905-476-4712<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.2430047, -79.4769243], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Victoria House</b><br>961 Metro Rd N, Keswick, ON  L4P 3E9<br>📞 905-989-1016<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.321469, -79.376237], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Halsey Lodge Adult Care Facility</b><br>875 Lake Dr E, Georgina, ON  L4P 3E9<br>📞 905-722-8001<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.5614448, -80.9417499], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Second Avenue Lodge</b><br>671 2nd Ave E, Owen Sound, ON  N4K 2G7<br>📞 519-372-0473<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.9145942, -79.3714131], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Lang Residence</b><br>710 Muskoka Rd S, Gravenhurst, ON  P1P 1K2<br>📞 705-687-5978<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.9519708, -79.3314507], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Doe Lake Residence</b><br>1750 Gravenhurst Pkwy, Gravenhurst, ON  P1P 1R3<br>📞 705-687-6285<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.3813095, -75.7486994], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Alexander House</b><br>716 Edison Ave, Ottawa, ON  K2A 1W1<br>📞 613-728-8827<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.3814815, -75.7487993], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Kimberlane Residence</b><br>712 Edison Ave, Ottawa, ON  K2A 1W1<br>📞 613-728-8827<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.3831456, -75.7470951], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Hampton Lodge</b><br>306 Irene Cres, Ottawa, ON  K1Z 7J7<br>📞 613-729-3040<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.3822681, -75.7385065], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Manoir Wymering Manor</b><br>845 Kirkwood Ave, Ottawa, ON  K1Z 5Y1<br>📞 613-722-8811<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.402644, -75.69395], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Glebeview Residence</b><br>297 First Ave, Ottawa, ON  K1S 2G7<br>📞 613-237-0954<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.436467, -75.6788927], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Rockwood Residence</b><br>2 Rockwood St, Ottawa, ON  K1N 8L7<br>📞 613-789-4780<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.4407195, -75.6768298], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Springfield Residence</b><br>30 Springfield Rd, Ottawa, ON  K1M 1C9<br>📞 613-749-4734<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.44185, -75.6673624], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Mon Plaisir Residence</b><br>88 Marquette Ave, Vanier, ON  K1L 5K1<br>📞 613-741-4940<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.442808, -75.6575016], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Residence Duford</b><br>151 Duford St, Vanier, ON  K1L 6Z5<br>📞 613-746-5914<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.3522283, -75.3539758], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>New Leaf Residence</b><br>5855 Buckland Rd, Vars, ON  K0A 3H0<br>📞 613-835-2525<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.3533809, -75.3511701], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Champagne Residence</b><br>5779 Rockdale Rd, Vars, ON  K0A 3H0<br>📞 613-835-2395<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.3374785, -75.2536722], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Residence Limoges</b><br>133 Ottawa St, Limoges, ON  K0A 2M0<br>📞 613-443-5303<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.3088402, -75.0853719], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Residence Mon Chez Nous</b><br>679 Jeanne Mance St, Casselman, ON  K0A 1M0<br>📞 613-764-3024<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.0277172, -74.7376788], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Primrose Manor</b><br>134 Ninth St W, Cornwall, ON  K6J 3A5<br>📞 613-933-9310<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.5180974, -74.6481129], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>MacDonald Residence</b><br>24 Bertha St, Vankleek Hill, ON  K0B 1R0<br>📞 613-678-6571<br>Score: 50<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.0687351, -80.1179909], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Ganohkwasra Family Assault Support Services - Youth Lodge</b><br>250, Ohsweken, ON  N0A 1M0<br>📞 519-445-0216<br>Score: 45<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.3284451, -79.7960128], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>ROCK - Burlington - Aberdeen House - Live-in Treatment</b><br>471 Pearl St, Burlington, ON  L7R 4M4<br>📞 289-266-0036<br>Score: 45<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.6700409, -79.4654037], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Society of Saint Vincent de Paul - Toronto - Church St - Toronto Central Council - Bed-Based Supportive Treatment - Ozanam House</b><br>88 Mulock Ave, Toronto, ON  M6N 3C6<br>📞 416-762-4195<br>Score: 45<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.651927, -79.375048], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Pilot Place Society - Lombard Street</b><br>70 Lombard St, Toronto, ON  M5C 2W2<br>📞 416-640-1934<br>Score: 45<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.9278788, -80.0998838], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Family Transition Place - Orangeville Office - Support Within Housing Program</b><br>20 Bredin Pkwy, Orangeville, ON  L9W 4Z9<br>📞 519-941-4357<br>Score: 45<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.801919, -79.3413697], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Homes First Society - Toronto - Placer Court Shelter - Placer Court Shelter</b><br>101 Placer Court, Toronto, ON  M5B 2K6<br>📞 416-510-2399<br>Score: 45<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.0012395, -81.1931432], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>CAN-VOICE (Consumer and Survivor Community Support Services) - Willow Creek House</b><br>454 Spruce St, London, ON  N5W 4P3<br>📞 519-434-8303<br>Score: 45<br><small>📍 Precise</small>');
+
+    L.circleMarker([42.9883837, -81.238622], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>LIFT Non-Profit Housing of London - LIFT House</b><br>446 Queens Ave, London, ON  N5R 6H5<br>📞 226-785-1345<br>Score: 45<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.0762164, -80.199559], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Family Transition Place - Shelburne Satelite Office</b><br>167 Centre St, Shelburne, ON  L9V 3R8<br>📞 519-941-4357<br>Score: 45<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.0463315, -79.454257], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Heritage Lodge - Mental Health Facility</b><br>508 College St, Newmarket, ON  L3Y 1C6<br>📞 905-853-1587<br>Score: 45<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.0565987, -79.4548984], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Brookside Lodge - Mental Health Facility</b><br>542 Wellington St, Newmarket, ON  L3Y 2C6<br>📞 905-853-7342<br>Score: 45<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.052918, -79.447387], {
+        radius: 8,
+        fillColor: 'green',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Parkview Manor - Mental Health Facilities</b><br>683 Gorham St, Newmarket, ON  L3Y 1L5<br>📞 905-895-9064<br>Score: 45<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.247791131733706, -79.87346734699801], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Riverbend Place Long Term Care</b><br>650 Coronation Blvd,Cambridge,ONN1R 7S6<br>📞 519-740-3820<br>Score: 40<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.729071195282124, -79.76058612907524], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>House of Wellness Assisted Living</b><br>15 Milford Cres,Brampton,ONL6S 3E3<br>📞 289-752-0710<br>Score: 40<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.8755187, -79.9688927], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Oliver House Corbett Residential Care - Community Homes for Opportunity</b><br>18186 Heart Lake Rd, Caledon, ON<br>📞 519-927-5285<br>Score: 40<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.64901358323367, -79.38805626512423], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Street Haven Supportive Housing</b><br>87 Pembroke St,Toronto,ONM5A 2N9<br>📞 416-967-6060<br>Score: 40<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.66270588808562, -79.38448073415887], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Montgomery Place SPRINT Supportive Housing</b><br>130 Eglinton Ave E,Toronto,ONM4P 2X9<br>📞 416-481-3225<br>Score: 40<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.6507973085596, -79.3875086312014], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Moore Place SPRINT Supportive Housing</b><br>801 Mount Pleasant Rd,Toronto,ONM4P 2Z4<br>📞 416-481-5232<br>Score: 40<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.3794742029017, -79.68896267394267], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Oak Terrace Long Term Care</b><br>291 Mississaga St W,Orillia,ONL3V 3B9<br>📞 705-325-2289<br>Score: 40<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.38082189704578, -79.69928470406299], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Eagle Terrace Long Term Care</b><br>329 Eagle St,Newmarket,ONL3Y 1K3<br>📞 905-895-5187<br>Score: 40<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.39158315522743, -79.68537478278378], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Reachview Village Long Term Care</b><br>130 Reach St,Uxbridge,ONL9P 1L3<br>📞 905-852-5191<br>Score: 40<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.38221941588533, -79.68831290693487], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Sherwood Court Long Term Care</b><br>300 Ravineview Dr,Maple,ONL6A 3P8<br>📞 905-303-3565<br>Score: 40<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.312921650820236, -78.31550088130467], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Lakeland Village Assisted Living</b><br>60 St George St,Lindsay,ONK9V 1M7<br>📞 705-328-3444<br>Score: 40<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.310828094306494, -83.04054691768424], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Riverside Place Long Term Care</b><br>3181 Meadowbrook Lane,Windsor,ONN8T 0A4<br>📞 519-974-0148<br>Score: 40<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.22355419446109, -76.48708751446352], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Green\'s Haven Country Assisted Living</b><br>3204 Princess Rd,Inverary,ONK0H 1X0<br>📞 613-353-1215<br>Score: 40<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.3306399, -76.1573416], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Ventures Group Home Residential Treatment Facility - Child Welfare Treatment Facility</b><br>298 Sydenham St, Gananoque, ON  K7G 1C3<br>📞 613-382-3441<br>Score: 40<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.42881292249699, -75.68888572903472], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Carlingview Manor Long Term Care</b><br>2330 Carling Ave,Ottawa,ONK2B 7H1<br>📞 613-820-9328<br>Score: 40<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.73184779639231, -79.77220786675389], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Humber Valley Terrace Long Term Care</b><br>95 Humber College Blvd,Etobicoke,ONM9V 5B5<br>📞 416-746-7466<br>Score: 35<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.64569544317868, -79.38927470725505], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Main Street Terrace Long Term Care</b><br>77 Main St,Toronto,ONM4E 2V6<br>📞 416-690-3001<br>Score: 35<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.65364036582218, -79.39185497632754], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Fairfield Residence Assisted Living for Seniors</b><br>10 Fairfield Ave,Etobicoke,ONM8V 2H9<br>📞 416-201-9975<br>Score: 35<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.872082, -79.415074], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Palmer Home Community Support Housing</b><br>460 Palmer Ave, Richmond Hill, ON  L4C 1R1<br>📞 905-770-1372<br>Score: 35<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.31769674571228, -78.32455708346221], {
+        radius: 8,
+        fillColor: 'orange',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Fenelon Court Long Term Care Centre</b><br>44 Wychwood Cres,Fenelon Falls,ONK0M 1N0<br>📞 705-887-2100<br>Score: 35<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.2306772, -79.9130879], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Lynwood Charlton Centre (LCC) - Lynwood Hall Program</b><br>526 Upper Paradise Rd, Hamilton, ON  L9C 5E3<br>📞 905-389-1361<br>Score: 30<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.2508473, -79.8651231], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Lynwood Charlton Centre (LCC) - Charlton Hall Program</b><br>121 Augusta St, Hamilton, ON  L8N 1R5<br>📞 905-389-1361<br>Score: 30<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.006967907612804, -79.49870140611347], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Little House Residential Care Inc</b><br>128 St Catharine St,Smithville,ONL0R 2A0<br>📞 905-957-3285<br>Score: 30<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.6396197, -79.4404072], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Parkdale Activity - Recreation Centre (PARC), The - Support Within Housing</b><br>1499 Queen St W, Toronto, ON  M6R 1A3<br>📞 416-537-2262<br>Score: 30<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.7363042, -79.5808276], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Youth Without Shelter - Housing and After-Care Program</b><br>6 Warrendale Court, Etobicoke, ON  M9V 1P9<br>📞 416-748-0110<br>Score: 30<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.64523055793947, -79.38379866910387], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Alexis Lodge</b><br>707 Ellesmere Rd,Scarborough,ONM1P 2W1<br>📞 647-846-2523<br>Score: 30<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.6590781, -79.3664437], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>St Jude Community Homes - Toronto - Dundas Street</b><br>431 Dundas St E, Toronto, ON  M5A 2B1<br>📞 416-359-9241<br>Score: 30<br><small>📍 Precise</small>');
+
+    L.circleMarker([42.991916455745205, -81.24986706877677], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Hillside Manor</b><br>5066 Perth Line 34,Stratford,ONN5A 6S6<br>📞 519-393-5132<br>Score: 30<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.0536714, -79.4638077], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Brigitta\'s Residential Home - Mental / Physical Health Facility</b><br>128 Arden Ave, Newmarket, ON  L3Y 4H6<br>📞 905-895-5890<br>Score: 30<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.0557915, -79.461473], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Brown\'s Residential Home - Mental Health Facility</b><br>399 Queen St, Newmarket, ON  L3Y 2G9<br>📞 905-898-1955<br>Score: 30<br><small>📍 Precise</small>');
+
+    L.circleMarker([44.38566857676762, -79.68864542414434], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>The Villa Retirement Lodge</b><br>689 Yonge St,Midland,ONL4R 2E1<br>📞 705-526-4238<br>Score: 30<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.38199310172973, -79.68811302407099], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Richview Manor</b><br>10500 Dufferin St,Vaughan,ONL6A 4R1<br>📞 289-553-3783<br>Score: 30<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.388871764808215, -79.68629110676001], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Southlake Residential Care Village</b><br>640 Grace St,Newmarket,ONL3Y 8V7<br>📞 905-895-7661<br>Score: 30<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.96851936278957, -82.40285328004606], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Blenheim Community Village Long-Term Care</b><br>10 Mary Av,Blenheim,ONN0P 1A0<br>📞 519-676-8119<br>Score: 30<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.314915401956284, -78.30984772053995], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Golden Plough Lodge</b><br>983 Burnham St,Cobourg,ONK9A 4J7<br>📞 905-372-8759<br>Score: 30<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.3321622, -82.9517082], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Inn of Windsor (The) - Residential Program</b><br>1687 Wyandotte St E, Windsor, ON  N8Y 1C8<br>📞 519-252-7768<br>Score: 30<br><small>📍 Precise</small>');
+
+    L.circleMarker([45.414946514791396, -75.69839171817111], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Rothwell Heights Retirement Residence</b><br>1735 Montreal Rd,Gloucester,ONK1J 6N4<br>📞 613-744-2322<br>Score: 30<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([45.4291855, -75.6674524], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Precision Health Group - Edgewood Care Centre</b><br>9 Stevens Ave, Ottawa, ON  K1K 1K4<br>📞 613-748-7000<br>Score: 30<br><small>📍 Precise</small>');
+
+    L.circleMarker([48.37374823850734, -89.25607393204686], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Hogarth Riverview Manor</b><br>300 Lillie St N,Thunder Bay,ONP7C 4Y7<br>📞 807-625-1110<br>Score: 30<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([48.4237123, -89.2330575], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Children\'s Centre Thunder Bay - Short Term Assessment and Treatment Unit</b><br>283 Lisgar St, Thunder Bay, ON  P7B 6G6<br>📞 807-343-5000<br>Score: 30<br><small>📍 Precise</small>');
+
+    L.circleMarker([48.6076517, -93.3896109], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Riverside Health Care - Fort Frances - Nelson House Transitional Housing</b><br>209 Armit Ave, Fort Frances, ON  P9A 2B7<br>📞 807-274-9100<br>Score: 30<br><small>📍 Precise</small>');
+
+    L.circleMarker([43.26500581836659, -79.86413821673513], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Dawn Patrol Group Homes</b><br>125 Victoria Ave S,Hamilton,ONL8N 2S9<br>📞 905-525-3763<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.26421200052223, -79.87181332769102], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Gentle Touch Assisted Living</b><br>44 Baker Ave,ONL5C 1E3<br>📞 647-894-4825<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.260046184306866, -79.87503081015764], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Stirling Heights Long Term Care</b><br>200 Stirling MacGregor Dr,Cambridge,ONN1S 5B7<br>📞 519-622-3434<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.25921573175325, -79.88029031664132], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Gwen Lee Supportive Housing Community</b><br>191 Main St W,Hamilton,ONL8P 4S2<br>📞 905-540-8932<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.246441592100815, -79.87802135847755], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Supportive Housing Program</b><br>17 Elizabeth Dr,Acton,ONL7J 2V5<br>📞 519-853-9916<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.444101447129974, -80.48977252034402], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Supportive Housing Of Waterloo</b><br>Offic, 362 Erb St W,Waterloo,ONN2L 1W6<br>📞 519-571-9408<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.72637618195685, -79.76340882968685], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Child Care Centres/Foster Homes/Group Homes</b><br>6733 Mississauga Rd,Mississauga,ONL5N 6J5<br>📞 1-877-832-2818<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.74115809304356, -79.76238565128439], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Cornerstone Group Home Inc</b><br>230 Brunel Rd,Mississauga,ONL4Z 1T5<br>📞 905-568-8320<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.73405497861145, -79.76968178549416], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Cornerstone Group Homes Inc</b><br>5659 McAdam Rd,Mississauga,ONL4Z 1N9<br>📞 905-502-9290<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.73821219569534, -79.76662380712565], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Westside Long Term Care</b><br>1145 Albion Rd,Rexdale,ONM9V 4J7<br>📞 416-745-4800<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.00070902913448, -79.49092737259893], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Bell Group Home Improvements</b><br>10 Donahugh Dr,Fonthill,ONL0S 1E0<br>📞 905-892-7616<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.00675376143888, -79.49026428145565], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>AIDS Niagara Supportive Housing</b><br>120 Queenston St,St Catharines,ONL2R 2Z3<br>📞 905-688-5670<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.645677740606544, -79.37331429322664], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Ontario Family Group Homes Inc</b><br>6060-3080 Yonge Street,Toronto,ONM4N 3N1<br>📞 905-247-5599<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.65804279564734, -79.38630803096946], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Comfort Residential Group Home</b><br>5 Collingsbrook Blvd,Scarborough,ONM1W 1L5<br>📞 647-838-6526<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.658639323942495, -79.38430348393193], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Storey Group Homes</b><br>187 Steeles Ave E,North York,ONM2M 3Y6<br>📞 416-590-9164<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.64746490802382, -79.37597928161894], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>In-Home Assisted Living Inc</b><br>2 St Clair Ave W,Toronto,ONM4V 1L5<br>📞 416-507-6457<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.64688670724196, -79.37543621319426], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Villa Colombo Services For Seniors</b><br>40 Playfair Ave,North York,ONM6B 2P9<br>📞 416-789-2113<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.64526825986294, -79.37587383596735], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>In-Home Assisted Living Ltd. Etobicoke</b><br>3250 Bloor Street West,Etobicoke,ONM8X 2X9<br>📞 647-846-8394<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.650405172169265, -79.3736129622187], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Community Living Toronto</b><br>2230 Lawrence Ave E,Scarborough,ONM1P 2R1<br>📞 416-755-0619<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.65547030287002, -79.39014694367678], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Brimley Acres (City Of Toronto Supportive Housin g)</b><br>2950 Lawrence Ave E,Scarborough,ONM1P 2T9<br>📞 416-392-6766<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.65523387016791, -79.38330509430469], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Nursing Home</b><br>3555 Danforth Ave,Scarborough,ONM1L 1E3<br>📞 416-696-9309<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.649830304764585, -79.38594545500128], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Circle Of Care Supportive Housing</b><br>155 Kendal Ave,Toronto,ONM5R 3S8<br>📞 416-924-4034<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.66016500900968, -79.39057902223178], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Supportive Housing</b><br>17 McCormack St,Toronto,ONM6N 1X5<br>📞 416-766-7056<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.655989613434144, -79.37411476116256], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Supportive Housing In Peel</b><br>2330 Hammond Rd,Mississauga,ONL5K 1T2<br>📞 905-855-5465<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.65255079934878, -79.38513863072345], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Supportive Housing Peel</b><br>2330 Hammond Rd,Mississauga,ONL5K 1T2<br>📞 905-855-0840<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.652741262113494, -79.37840403407476], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Supportive Housing Inc</b><br>273 Main St N,Brampton,ONL6X 1N4<br>📞 905-455-7631<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.08108291677515, -79.08669438571741], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>ARID Group Home (Niagara) Inc</b><br>89 Queen St,Fort Erie,ONL2A 1T9<br>📞 905-871-7041<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.978750816117554, -81.24365330281042], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Argyle Group Home</b><br>52 Argyle St,London,ONN6H 1Y7<br>📞 519-438-3487<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.97968693750462, -81.24950698137694], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Chateau Gardens Nursing Home</b><br>465 Talbot St W,Aylmer,ONN5H 1K8<br>📞 519-773-3671<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.99473442340915, -81.2446259255408], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>St Thomas Supportive Housing</b><br>200 Chestnut St,St Thomas,ONN5R 5P3<br>📞 519-637-6374<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.89383702844143, -78.85891575224737], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Allan Stewart Group Homes</b><br>1995 Guild Rd,Pickering,ONL1V 1X9<br>📞 905-619-2499<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.89044216616311, -78.8640018113281], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Stewart Group Homes</b><br>1993 Guild Rd,Pickering,ONL1V 1X9<br>📞 905-686-3111<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.88927563019311, -78.86050945361359], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Thorntonview Long Term Care</b><br>186 Thornton Rd S,Oshawa,ONL1J 5Y2<br>📞 905-576-5181<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.89682334488889, -78.87306195378126], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Winbourne Park Long Term Care</b><br>1020 Westney Rd N,Ajax,ONL1T 4K6<br>📞 905-426-6296<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.89133806739942, -78.86854875825868], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Bay Ridges Long Term Care</b><br>900 Sandy Beach Rd,Pickering,ONL1W 1Z4<br>📞 905-837-8745<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.90203065896078, -78.87550357313978], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Fosterbrooke Long Term Care</b><br>330 King Ave W,Newcastle,ONL1B 1G9<br>📞 905-987-4703<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.3914810371211, -79.70001758043114], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Bradford Group Home B</b><br>2 Impérial Cres,Bradford,ONL3Z 2N9<br>📞 905-778-1457<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.381706136482826, -79.68997706857402], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Helping Hands Supportive Housing</b><br>250 Barrie Rd,Orillia,ONL3V 7R4<br>📞 705-325-4703<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.978134804209965, -82.40043135688302], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Tilbury Manor</b><br>16 Tilbury St,Chatham-Kent,ON<br>📞 519-682-0243<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.30640491960817, -78.32050296361925], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>The Landmark Assisted Living</b><br>130 New Densmore Rd,Cobourg,ONK9A 4J9<br>📞 905-372-2491<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.315303423280675, -83.04428115237373], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Assisted Living SW Ontario</b><br>204-8950 Wyandotte St E,Windsor,ONN8S 1V3<br>📞 519-915-7154<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.22355108104486, -76.48886272172439], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Connor Group Homes</b><br>325 Portsmouth Ave,Kingston,ONK7M 1V7<br>📞 613-549-5280<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.234634456480464, -76.48553343617849], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Carveth Nursing Home</b><br>375 James St,Gananoque,ONK7G 2Z1<br>📞 613-382-8514<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([48.388025124656, -89.25308853644503], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Foster Homes/Group Homes</b><br>435 James St S,Thunder Bay,ONP7E 6S7<br>📞 807-475-1597<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([48.375780555486074, -89.24065798051792], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Bethammi Nursing Home</b><br>63 Carrie St,Thunder Bay,ONP7A 4J2<br>📞 807-768-4430<br>Score: 25<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.24632734493685, -79.86416870531421], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Child Care/Foster Homes/Group Homes</b><br>Hamilton,ON<br>📞 905-521-7344<br>Score: 20<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.2576074335028, -79.87769174504737], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Assisted Living for Seniors</b><br>10 Pearl St N,Hamilton,ONL8R 2Y8<br>📞 905-777-8801<br>Score: 20<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.2550961018869, -79.87842192241021], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>In-Home Assisted Living Ltd. Mississauga/Brampto n</b><br>7111 Syntex Dr Floor 3,Mississauga,ONL5N 8C3<br>📞 647-805-9330<br>Score: 20<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.44470578261027, -80.48606961495635], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Forest Heights Long Term Care Centre</b><br>60 Westheights Dr,Kitchener,ONN2N 2A8<br>📞 519-576-3320<br>Score: 20<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.00165241145751, -79.49967200120572], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Alcohol Recovery in Dignity (ARID) Group Homes</b><br>175 Pine St S,Thorold,ONL2V 3M5<br>📞 905-227-1113<br>Score: 20<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.0084076039298, -79.50982422877513], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>K. A. Drake Seniors Assisted Living Inc.</b><br>17-7000 McLeod Rd,Niagara Falls,ONL2G 7K3<br>📞 289-800-3374<br>Score: 20<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.653228491078984, -79.3861944753111], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>The Conservatory Group Home Decor Centre</b><br>7330 Yonge St,Thornhill,ONL4J 7Y7<br>📞 905-709-8655<br>Score: 20<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.64485699683733, -79.3760629699821], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Supportive Housing Coalition Of Metro Toronto</b><br>330 Dundas St E,Toronto,ONM5A 2A1<br>📞 416-935-0330<br>Score: 20<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.662384848654284, -79.37965845043743], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>The Supportive Housing Coalition Of MetropolitanToronto</b><br>1480 Queen St E,Toronto,ONM4L 1E3<br>📞 416-462-0581<br>Score: 20<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.6572161657489, -79.38528026980998], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Bellwood Centre For Community Living Ltd</b><br>3 Concorde Gate,North York,ONM3C 3N7<br>📞 416-696-9663<br>Score: 20<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.64385766692093, -79.37518851080203], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>West Hill Community Services Supportive Housing Program</b><br>4205 Lawrence Ave E,Scarborough,ONM1E 4S6<br>📞 416-282-2848<br>Score: 20<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.64543737293057, -79.39111437601136], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Caledon Community Services - Supportive Housing</b><br>25 Stationview Pl,Bolton,ONL7E 1K8<br>📞 905-857-0356<br>Score: 20<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.98937321850845, -81.24341090330022], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Mount Hope Centre For Long Term Care</b><br>21 Grosvenor St,London,ONN6A 1Y6<br>📞 519-646-6100<br>Score: 20<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.98151228126874, -81.24892999466206], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Ingersoll Services for Seniors Supportive Housing</b><br>178 Earl St,Ingersoll,ONN5C 2W9<br>📞 519-485-6093<br>Score: 20<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.307566660806785, -83.04289510921326], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Licences And Permits Foster Homes-Group Homes</b><br>270 Érié St E,Windsor,ONN9A 3X1<br>📞 519-254-5355<br>Score: 20<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.234079001810585, -76.47680715300135], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>VON Assisted Living</b><br>306-200 Dundas St E,Belleville,ONK8N 1E3<br>📞 <br>Score: 20<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([48.37719510084007, -89.24073863710201], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Janzen\'s Pharmacy Assisted Living & Compliance P ackaging</b><br>300 Lillie St N,Thunder Bay,ONP7C 4Y7<br>📞 807-345-1335<br>Score: 20<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.25748804390472, -79.87090198974418], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Living Assistance Services</b><br>200-5063 North Service Rd,Burlington,ONL7L 5H6<br>📞 905-630-5499<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.24989425398219, -79.86236544585773], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Retirement Home Referral Services</b><br>1-1356 Charles Dr,Hamilton,ONL7P 2C9<br>📞 905-220-2288<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.252400749021874, -79.87109970600976], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>The Good Care Group</b><br>4145 North Service Rd,Burlington,ONL7L 6A3<br>📞 289-812-2297<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.25982997381422, -79.87471411960816], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Qualicare Burlington</b><br>4145 North Service Road,Burlington,ONL7L 6A3<br>📞 289-787-0505<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.25441761715621, -79.87671208097241], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Palliative Care Consultation Program</b><br>2370 Speers Rd,Oakville,ONL6L 5M2<br>📞 905-827-2089<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.316035037046504, -79.80058765888299], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Lady In Pink Care</b><br>73 Burlington St E,Hamilton,ONL8L 4G5<br>📞 289-230-5085<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.544056480929434, -80.25638662446238], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Peace of Mind Care</b><br>291 Woodlawn Road West,Guelph,ONN1H 7L6<br>📞 519-827-5866<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.461486151629316, -80.48890895629752], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Articulate Nursing</b><br>104-130 Mt Hope St,Kitchener,ONN2G 4M6<br>📞 226-896-0980<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.45252545221643, -80.48647925071373], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Total Help Care</b><br>18-590 Kraus Dr,Waterloo,ONN2L 6K2<br>📞 519-957-2273<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.47437250126781, -79.69251181728437], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Qualicare Mississauga</b><br>2324 Hertfordshire Way,Oakville,ONL6H 7M5<br>📞 289-205-0788<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.46142798124264, -79.69700097346008], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Qualicare Mississauga Inc</b><br>1665 The Collegeway,Mississauga,ONL5L 0A9<br>📞 905-901-5180<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.59558593720077, -79.65193076303136], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Nucleus & Independent Living</b><br>2030 Bristol Cir,Oakville,ONL6H 0H2<br>📞 905-829-4499<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.5924862542033, -79.64525288409239], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>AlephCare Med-Staff</b><br>77 City Centre Drive,Mississauga,ONL5B 1M5<br>📞 905-306-0300<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.729842820634374, -79.77184269524955], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>BMP Home Mobility Care</b><br>E2-10910 Goreway Dr,Brampton,ONL6P 4N4<br>📞 289-505-2726<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.73629492480418, -79.75492460188464], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>We Care Home Health Svc</b><br>5580 Kennedy Rd,Mississauga,ONL4Z 2A9<br>📞 905-407-2273<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.74051792385561, -79.76339661967624], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Armisael Care</b><br>21 Sams Cres,Brampton,ONL7A 3R7<br>📞 647-608-5620<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.73385760927121, -79.77234537469039], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>IR Care Mississauga</b><br>5925 Airport Rd,Mississauga,ONL4V 1W1<br>📞 647-695-9874<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.72950395789726, -79.75505423491623], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Canes Community Care</b><br>400-135 Queen\'s Plate Dr,Etobicoke,ONM9W 6V1<br>📞 416-743-3892<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.738844333546105, -79.76148565392224], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Care Partners</b><br>301-61 Gillingham Dr,Brampton,ONL6X 0Z9<br>📞 905-452-7118<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.991990270667294, -79.49774509921913], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Daval Hospice</b><br>3428 Portage Rd,Niagara Falls,ONL2J 2K4<br>📞 289-296-9970<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.00756864537101, -79.50056111646671], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>ResCare Premier Canada/Anagram Premier</b><br>990 Line 1,Niagara On The Lake,ONL0S 1J0<br>📞 905-468-0532<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.00636998570455, -79.50103402810404], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Care On Wings</b><br>5941 Delaware ST,Niagara Falls,ONL2G 2E4<br>📞 289-931-3138<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.009024453816814, -79.49751576245242], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Compassionate Care Givers</b><br>433 Mill St N,Ridgeway,ONL0S 1N0<br>📞 905-894-2637<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.649086454870684, -79.38255987771191], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Peel Living</b><br>1745 Dundas St E,Mississauga,ONL4X 1L5<br>📞 905-624-2642<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.6527843275969, -79.38905049247715], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>PACE Independent Living</b><br>970 Lawrence Ave W,Toronto,ONM6A 3B6<br>📞 416-789-7806<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.65219288814888, -79.38916933705036], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Transitional & Supportive Housing ServicesOf York Region</b><br><br>📞 905-898-1658<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.65500532618739, -79.38803143875971], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Circle of Care</b><br>4211 Yonge St,North York,ONM2P 2A9<br>📞 416-635-2900<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.654061089344424, -79.3750499521242], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Carefect</b><br>1200 Bay St,Toronto,ONM5R 2A5<br>📞 416-848-4571<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.64623517324597, -79.37430381962712], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>A Supreme Nursing</b><br>845 Wilson Ave,North York,ONM3K 1E6<br>📞 647-748-0061<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.643658996852004, -79.37804999410318], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Qualicare Vaughan</b><br>3910 Bathurst Street,North York,ONM3H 5Z3<br>📞 289-787-0505<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.65718088715375, -79.38952520893415], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Care Chairs</b><br>4-25 Connell Crt,Toronto,ONM8Z 1E8<br>📞 416-512-9072<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.09050904713382, -79.08267510288783], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Care At Home - NPLH</b><br>85 Westland St,St Catharines,ONL2S 3X3<br>📞 905-641-4663<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.097563516083035, -79.08693080754738], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Qualicare St. Catharines & Niagara</b><br>205 King Street,St. Catharines,ONL2R 3J5<br>📞 905-685-0240<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.99053159644602, -81.23977882467946], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Arbor Trace Memory Care Center</b><br>120 Chelton Road,London,ONN6M 0C9<br>📞 519-681-0002<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.97567801887085, -81.25075695441986], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Stratford Perth Shelterlink</b><br>130 Youngs St,Stratford,ONN5A 1J7<br>📞 519-272-2294<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.05919214541018, -79.45511136721552], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Golden Line Care Centre</b><br>204-10670 Yonge St,Richmond Hill,ONL4C 3C9<br>📞 905-237-5654<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.05942599859153, -79.45511546693146], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Home Watch Care Givers</b><br>114 The Fairways,Markham,ONL6C 2V8<br>📞 289-809-2116<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.06195003596568, -79.45278663156441], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Qualicare</b><br>203-7787 Yonge St,Thornhill,ONL3T 7L2<br>📞 289-588-1858<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.893810481994095, -78.8642502847642], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Fullerton\'s Home PC Care</b><br>62 Watersdown Cres,Whitby,ONL1R 1Y9<br>📞 289-356-1176<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.89958035475933, -78.86512681968433], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>CoziCare In-Home Service Inc</b><br>2-105 Consumers Dr,Whitby,ONL1N 1C4<br>📞 905-231-3122<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.89604364672833, -78.85734779162507], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Community Care Durham</b><br>16100 Old Simcoe Rd,Port Perry,ONL9L 1P3<br>📞 905-985-0150<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.892055447343964, -78.86575529139323], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Extendicare</b><br>551 Conlins Rd,Toronto,ONM1B 5S1<br>📞 416-282-6768<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.90408261924494, -78.86052654832827], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Qualicare Durham</b><br>240 Chapel St,Cobourg,ONK9A 0E3<br>📞 289-634-1650<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.88810196613647, -78.86017005058126], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Whitby Transitional Community Care</b><br>417 Byron St N,Whitby,ONL1N 4N5<br>📞 905-430-6183<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.887992571627265, -78.87179446341769], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Prime Of Life Personal Care</b><br>99 Michael Blvd,Whitby,ONL1N 5Y3<br>📞 289-688-1639<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.387965040536855, -79.69735487375009], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Leisureworld Caregiving Centre-Richmond Hill</b><br>170 Red Maple Rd,Richmond Hill,ONL4B 4T8<br>📞 905-731-2493<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.398011181841504, -79.69169570866634], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Hospice Orillia</b><br>169 Front St S,Orillia,ONL3V 4S8<br>📞 705-325-0505<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.39197218022923, -79.69273242970316], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Orchid Respite Services</b><br>4562 Orkney Hts,Orillia,ONL3V 6H7<br>📞 705-325-1515<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.397041151677854, -79.69847756398244], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Qualicare Newmarket</b><br>203-130 Davis Drive,Newmarket,ONL3Y 2N1<br>📞 289-803-3883<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.96686738691257, -82.41421272025693], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Vision Nursing And Rest Home</b><br>229 Wellington St,Sarnia,ONN7T 1G9<br>📞 519-336-6551<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.31122155967645, -78.31705398871765], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Community Care - Peterborough</b><br>180 Barnardo Ave,Peterborough,ONK9H 5V3<br>📞 705-742-7067<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.31882479057405, -78.32899693398352], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Phoenix Residential Treatment</b><br>4510 Hyway 7,Omemee,ONK0L 2W0<br>📞 705-799-1132<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.31298087052147, -78.32389636960616], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Community Care Millbrook</b><br>22 King E,Millbrook,ONL0A 1G0<br>📞 705-932-2011<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.31090743901928, -78.32952255508474], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Community CareNorwood</b><br>2281 County Rd 45,Norwood,ONK0L 2V0<br>📞 705-639-5631<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.30060945917709, -78.32872732512857], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Nightingale Nursing Registry</b><br>1005 Elgin St W,Cobourg,ONK9A 5J4<br>📞 289-252-2121<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.302831504053664, -78.31142816184968], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Community Care Apsley</b><br>126 Burleigh,Apsley,ONK0L 1A0<br>📞 705-656-4589<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.309110334978776, -78.32118173534404], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Community CareHarvey</b><br>Lakehurst Rd,Buckhorn,ONK0L 1J0<br>📞 705-657-2171<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.30904985072343, -78.32066691077222], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Community Care Lakefield</b><br>40 Rabbit,Lakefield,ONK0L 2H0<br>📞 705-652-8655<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.30637093166204, -83.0446859946238], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Day Nursery Child Care Foster Homes Group Homes Licences and Permits</b><br>270 Erie St E,Windsor,ON<br>📞 519-254-1651<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.324610330371236, -83.03675110690561], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>TruCare Home Health</b><br>2578 Dougall Ave,Windsor,ONN8X 1T7<br>📞 519-972-5267<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([46.49402384054739, -80.99450662660014], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>At-Home Hospice Inc</b><br>5-298 Whittaker St,Sudbury,ONP3C 3X8<br>📞 705-669-9179<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([45.41952523499429, -75.68954417617354], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Carefor Nor-Dun Support Centre</b><br>517 Albert St,Winchester,ONK0C 2K0<br>📞 613-774-6109<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([45.41731398291148, -75.70383154922719], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Carefor Health & Community Services</b><br>760 Belfast Rd,Ottawa,ONK1G 6M8<br>📞 613-749-7557<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([45.42411272806263, -75.69037817316907], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Carefor Richmond Care Home</b><br>27 Nixon Farm Dr,Richmond,ONK0A 2Z0<br>📞 343-882-8216<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([45.421673478208064, -75.68787816044237], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Groupe Optinursing</b><br>67 Rue Du Couvent,Gatineau,QCJ9H 6A2<br>📞 613-261-5434<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([48.37721915380167, -89.24481122672672], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>St Joseph\'s Care Group St Joseph\'s Hospital - 35 Algoma St N St Joseph\'s Heritage 63 Carrie St Bethammi Nursing Home 2nd Fl</b><br><br>📞 807-768-4419<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([48.3777687604674, -89.2479615258131], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Dilico Anishinabek Family Care</b><br>200 Anemki Pl,Fort William First Nation,ONP7J 1L6<br>📞 807-623-8511<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([48.38317337128078, -89.25557730861013], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Lucie\'s Mobile Foot Care</b><br>620 McDonald Street,Thunder Bay,ONP7C 3E1<br>📞 807-622-8219<br>Score: 15<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.13858592099601, -80.264146179275], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Victoria Eldercare</b><br>65 Donly Dr N,Simcoe,ONN3Y 0C2<br>📞 519-429-2644<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.25465358698443, -79.87118458578153], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>iCare Home Health Services</b><br>101-2275 Upper Middle Rd E,Oakville,ONL6H 0C3<br>📞 905-491-6941<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.26153545749197, -79.86128788645216], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Always Best Care Senior Services Of Mississauga</b><br>6-2400 Dundas St W,Mississauga,ONL5K 2R8<br>📞 905-997-0540<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.24975437738583, -79.87416188668013], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>The Elder Care Company Ltd.</b><br>49 Cromarty Ave,Caeldonia,ONN3W 0B6<br>📞 1-833-378-3225<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.32285511519364, -79.80844931258919], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Tele-Touch (Seniors)</b><br>414 Victoria Ave N,Hamilton,ONL8L 5G8<br>📞 905-522-0053<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.454977160345315, -80.49042118686162], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Senior Home Service</b><br>118-355 Elmira Rd N,Guelph,ONN1K 1S5<br>📞 519-821-0151<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.44773453944805, -80.48663709420077], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Seniors For Seniors-Kitchener</b><br>000001 Misc 519742,Kitchener,ONN2G 2N7<br>📞 519-585-0845<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.59543546952987, -79.64042996736843], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Elder Support</b><br>203-1809 Lawrence Ave W,North York,ONM6L 1E3<br>📞 647-894-5225<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.581308698174844, -79.64735650152029], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Loving Support Services</b><br>3180 Lake Shore Blvd W,Etobicoke,ONM8V 1L7<br>📞 647-707-2075<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.73032402795324, -79.76431733556963], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Home & Community Care Support Servcs(Cw)</b><br>199 County Court Blvd,Brampton,ONL6W 4P3<br>📞 289-201-4164<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.73764826181354, -79.76219491883835], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Sunrise Senior Living Mississauga</b><br>1279 Burnhamthorpe Rd E,Mississauga,ONL4Y 3V7<br>📞 905-625-1344<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.72482689703541, -79.76108635592828], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Gta Happy Nursing Home Care</b><br>274 Comiskey Cres,Mississauga,ONL5W 0C4<br>📞 905-872-7776<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.738774990815834, -79.7671249892267], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Elcare Health Services</b><br>1 Regan Rd Unit 9,Brampton,ONL7A 1B8<br>📞 365-544-1555<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.99068053724355, -79.49721893909938], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Premiere Home And Nursing Care Inc</b><br>7756 Butternut Blvd,Niagara Falls,ONL2H 0N7<br>📞 905-708-2583<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.00758891769912, -79.50784097480285], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Friends For Seniors Niagara</b><br>714 Steele St,Port Colborne,ONL3K 4Z2<br>📞 905-328-4606<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.658245524715724, -79.3803618243047], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Home Instead Senior Care</b><br>953 Woodbine Ave,Toronto,ONM4C 4B6<br>📞 416-698-1384<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.65443037020234, -79.38772631046427], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>We Care Home Health Services</b><br>3300 Bloor St W,Etobicoke,ONM8X 2W8<br>📞 416-922-7601<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.65412975143899, -79.3855407594178], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Seniors For Seniors</b><br>2 Bloor St E,Toronto,ONM4W 1A8<br>📞 416-481-2733<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.979483841466376, -81.25463806533268], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Tender Loving Care Home An Alternative To Institutional Care</b><br>11470 Miller Rd RR 1,Delaware,ONN0L 1E0<br>📞 519-652-3415<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.980608239289296, -81.23742224088774], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Serenity at Home Support Services Inc.</b><br>120 Market St,LUCAN,ONN0M 2J0<br>📞 519-318-5147<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.06170918696806, -79.4676975242418], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Yee Hong Centre For Geriatric Care</b><br>2311 McNicoll Ave,Scarborough,ONM1V 5L3<br>📞 416-321-6333<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.89469692437893, -78.85691449117508], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Front Line Community Care Senior Living</b><br>15-75 Bayly St W,Ajax,ONL1S 7L7<br>📞 289-275-3781<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.89855540309527, -78.86640490149014], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Can Do Support Services</b><br>1218 MacInally Crt,Oshawa,ONL1K 0B8<br>📞 905-743-1195<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.887229005837185, -78.85840406772807], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Senior Helpers Markham</b><br>80 Main St N,Markham,ONL3P 1X5<br>📞 905-294-3155<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.891958511558165, -78.86471999508157], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Lennox Elder Care</b><br>1543 Fieldgate Dr,Oshawa,ONL1K 2L5<br>📞 289-939-1662<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.379679287016884, -79.6947371125144], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>CHATS - Community & Home Assistance To Seniors</b><br>240 Edward St,Aurora,ONL4G 3S9<br>📞 905-713-3373<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.39072986131269, -79.69026671528808], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Memory Lane Home Living Inc</b><br>Richmond Hill,ON<br>📞 905-237-1419<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.39065271638505, -79.6902474057946], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Caring for Seniors Inc</b><br>7441 9th Line RR 3,Thornton,ONL0L 2N0<br>📞 705-424-7025<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.39722155943287, -79.69565935321616], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Care from God After Hours Senior Services</b><br>90 Concession Road 3 E,Tiny,ONL0L 2T0<br>📞 705-529-3941<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.98332542782759, -82.40299074212932], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Chatham Kent Kids Home Child Care div Lambton Rural Child Care</b><br>215 Murray St,Chatham,ONN7M 3L4<br>📞 519-355-0537<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.31656124892942, -78.32699356922156], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Community Community Care - Peterborough</b><br>Caremobile,Peterborough,ON<br>📞 705-749-0036<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.31240416731227, -78.31984888609281], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Senior Helpers</b><br>52 King Street West,Cobourg,ONK9A 2L9<br>📞 289-252-2804<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.310473664482934, -78.31021737995916], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Community Care Chemung</b><br><br>📞 705-292-8708<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.324182086330936, -83.04203274449515], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Quality Care</b><br><br>📞 519-563-7091<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([46.49577968871604, -80.99007601246085], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>North East LHIN Home And Community Care</b><br>53 Govt W,Krklk,ONP3C 1S8<br>📞 705-567-2222<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([46.494484942900996, -80.99789073471935], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>For Seniors Only Inc</b><br>1894B Lasalle Blvd,Sudbury,ONP3A 2A4<br>📞 705-522-0679<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([46.49064575345098, -80.98877980602272], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Senior\'s Helping Hands Services / Services d\'Appuis aux Aînés</b><br>1078 Evansville Dr,Sturgeon Falls,ONP2B 2K4<br>📞 705-477-1402<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([45.413789487932796, -75.70251445983716], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Embassy West Senior Living</b><br>1400 Carling Ave,Ottawa,ONK1Z 7L8<br>📞 613-729-4321<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([45.42866988742342, -75.69560223838445], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Gillani Heating & Appliance Care Inc</b><br>187 Bradwell Way,Gloucester,ONK1T 4J4<br>📞 613-482-4083<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([45.42495147700592, -75.70245919609602], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Nor-Dun Senior Support</b><br>517-A Winchester Albert,Winchester,ONK0C 2K0<br>📞 613-774-6109<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([45.416204079406214, -75.69769162072097], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>KayKare Senior Services</b><br>51A John St N,Arnprior,ONK7S 2N1<br>📞 613-407-4604<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([48.371583801393115, -89.24129075240602], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>North West LHIN Home and Community Care</b><br>961 Alloy Dr,Thunder Bay,ONP7B 5Z8<br>📞 807-345-7339<br>Score: 10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.65610690352733, -79.37388934972498], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>The Guardian Group Home Care Solutions</b><br>200-100 Consilium Pl,Scarborough,ONM1H 3E3<br>📞 647-933-5595<br>Score: 5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.381584216678675, -79.69518329809817], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>IOOF Seniors Homes Inc</b><br><br>📞 705-739-6299<br>Score: 5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.313182736462686, -78.32413057943589], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Integrity Carpentry Lawn Care & Residential Main tenance</b><br><br>📞 905-207-3578<br>Score: 5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.31459561785877, -83.04540588282516], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Home Support Services</b><br>sales pls verify billing address with customer,Barrie,ON<br>📞 705-739-1914<br>Score: 5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.30851857263384, -83.04037013778081], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>We Care Health Services</b><br><br>📞 519-978-3747<br>Score: 5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.227130313254754, -76.48300372708486], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Quality Care Health Services Ltd</b><br>Kingston,ON<br>📞 613-531-0265<br>Score: 5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([46.495158555011585, -81.00052699534666], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Senior\'s Helping Hand Services</b><br>NORTH BAY,ON<br>📞 705-477-1402<br>Score: 5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.14182454353812, -80.27009064478767], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Best Life Home Care</b><br>11 Anthony Crt,Hamilton,ONL9C 6T7<br>📞 905-381-4100<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.250847548451176, -79.87627685359837], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>LivingWell HomeCare</b><br>1260 King St E,Hamilton,ONL8M 1G8<br>📞 905-547-8199<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.26370483429386, -79.86698800307798], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Community Care Access Centre (CCAC)</b><br>1-211 Pritchard Rd,Hamilton,ONL8J 0G5<br>📞 905-523-8600<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.256843122258985, -79.8724488820159], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Gold Cross Home Care</b><br>1360 Upper Sherman Ave,Hamilton,ONL8W 3Z6<br>📞 905-381-9201<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.24596474832575, -79.87064395769093], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Paramed Home Health Care</b><br>301-883 Upper Wentworth St,Hamilton,ONL9A 4Y6<br>📞 905-318-8522<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.252070226022916, -79.86678641930294], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>St Josephs Home Care</b><br>410 John St,Burlington,ONL7R 4P5<br>📞 905-631-9281<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.2624185059635, -79.87621955074714], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Access Personal Support Ltd.</b><br>12A-5115 Harvester Rd,Burlington,ONL7L 0A3<br>📞 905-777-2411<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.35662279913345, -80.30916522443823], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Aurora Home Care Assistance</b><br>399 Mill St,Kitchener,ONN2M 3R9<br>📞 519-716-5683<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.32932623710902, -79.7971026677281], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>First Class Home Care</b><br>4-467 801 Speers Rd,Oakville,ONL6K 3S4<br>📞 905-636-9995<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.32963938711522, -79.79289362737684], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Divine Home Care</b><br>1800 Barton St E,Hamilton,ONL8H 2Y6<br>📞 289-922-8475<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.54854465991234, -80.25333365050375], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Cheryl\'s Personal Support</b><br>84 Stanmore Ave,Kitchener,ONN2B 3W2<br>📞 226-749-4156<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.44867232599893, -80.48381579016052], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Home Care Assistance of Waterloo</b><br>324 Highland Rd W,Kitchener,ONN2M 5G2<br>📞 519-590-2792<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.443327263625875, -80.48557640101889], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Aquarius Home Healthcare</b><br>1718 King St E,Cambridge,ONN3H 3R8<br>📞 519-219-1989<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.45503540091613, -80.50170958991194], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Solace Home Health Care</b><br>1680 Bishop St N,Cambridge,ONN1R 7J3<br>📞 226-220-9832<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.45923209000183, -79.67990103459088], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Providence Home Care</b><br>2400 Dundas St W,Mississauga,ONL5K 2R8<br>📞 905-581-7737<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.57959849938719, -79.63925694471405], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Home Care</b><br>200 County Court Blvd,Brampton,ONL6W 4K7<br>📞 905-456-8156<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.584320858472374, -79.64192978213806], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Rural Home Care</b><br>60 Queen St Huron-Kinloss T,Huron-Kinloss T,ONL6W 4P6<br>📞 519-395-3982<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.59188162027356, -79.64519477423352], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Livingwaters Healthcare Inc</b><br>202-75 International Blvd, West Twr,Etobicoke,ONM9W 6L9<br>📞 437-800-1534<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.73004529065567, -79.7605018241312], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>ComForcare Home Care</b><br>1300 Steeles Ave E,Brampton,ONL6T 1A2<br>📞 905-796-2273<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.72452831369628, -79.75638881277028], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Essential Needs Non-Medical Home Care</b><br>76 Jade Cres,Brampton,ONL6S 3H1<br>📞 416-809-7107<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.731178404083145, -79.7611219803926], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Canadian Home Care Association</b><br>2000 Argentia,Streetsville,ONL5N 1P7<br>📞 905-567-7373<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.7223250255853, -79.77025694119268], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>ComForCare Home Care Mississauga</b><br>600 Matheson Boulevard West,Mississauga,ONL5R 4C1<br>📞 647-368-8917<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.73690064285693, -79.7603012372517], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Edwardson In-Home Care</b><br>6675 Millcreek Dr,Mississauga,ONL5N 5M4<br>📞 905-580-0042<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.001007268498164, -79.5053385099207], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Millenium Home Care</b><br>1 Hiscott St,St Catharines,ONL2R 1C7<br>📞 905-687-9880<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.64764806007592, -79.38855634560953], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Premier Home Healthcare Group</b><br>1920 Weston Rd,York,ONM9N 1W5<br>📞 437-889-8112<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.649736738833354, -79.38229944771903], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Comfort Keepers Home Care</b><br>245 Fairview Mall Dr #401,North York,ONM2J 4T1<br>📞 416-800-2535<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.65781181121137, -79.38581836126856], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>VHA Home HealthCare</b><br>30 Soudan Ave,Toronto,ONM4S 1V6<br>📞 416-489-2500<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.64983803448679, -79.38865403176311], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>CareHop Nursing & Home Care</b><br>4202 Dundas St W,Etobicoke,ONM8X 1Y6<br>📞 647-361-4795<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.64950400255679, -79.38290126043749], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Full Circle Home Care Inc.</b><br>3 Kingsmill Rd,Etobicoke,ONM8X 2N7<br>📞 416-606-9993<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.659666484247026, -79.38525086581302], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Nu-Life Home Health Care Limited</b><br>105-2801 Keele St,Toronto,ONM3M 2G6<br>📞 416-633-3457<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.093945423598754, -79.0772225626468], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Geneva St Home Care</b><br>421 Geneva St,St Catharines,ONL2N 2H2<br>📞 905-329-2373<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.97850341189753, -81.24646464958124], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Assurance Home Health Care</b><br>3-655 Wellington Rd,London,ONN6C 4R4<br>📞 519-601-4155<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.98890105624953, -81.24301671432667], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Absolute Home Healthcare Plus</b><br>29-757 Wharncliffe Rd S,London,ONN6J 2N7<br>📞 519-204-3854<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.05247538975723, -79.47080056172602], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Central Community Care Access Centre</b><br>1100 Gorham St,Newmarket,ONL3Y 7V1<br>📞 905-895-1240<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.05761466842801, -79.46892707227205], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>VR Home Care inc.</b><br>10-636 Edward Ave,Richmond Hill,ONL4C 0V4<br>📞 905-237-1700<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.06185745418703, -79.45748995763817], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Qualicare Home Care Richmond Hill</b><br>10271 Yonge Street,Richmond Hill,ONL4C 3B5<br>📞 289-276-8870<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.8930281950649, -78.8685049404756], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Meridian Home Care</b><br>31 Agate Rd,Ajax,ONL1S 3J7<br>📞 905-683-2111<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.90500075485857, -78.86110459172417], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Hummingbir Home Care</b><br>396 Humewood Ave,Oshawa,ONL1G 2T5<br>📞 905-233-1846<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.89938542337311, -78.8567591960977], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>WWMD Home Care</b><br>252 Huntington Cres,Courtice,ONL1E 3J5<br>📞 905-244-0152<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.89298892026444, -78.85590977111704], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Qualicare Home Care Durham Region</b><br>27 Apsley Crescent,Whitby,ONL1M 2E7<br>📞 289-275-9338<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.88857745014574, -78.87010333235614], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Proper Home Care</b><br>116 Bryant Rd,Ajax,ONL1S 2Y8<br>📞 905-999-5303<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.888314666394955, -78.85869954858845], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Maple Leaf Home Care</b><br>339 Longworth Ave,Bowmanville,ONL1C 5J5<br>📞 905-697-0329<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.381468006803175, -79.6870697826548], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Welcome Home Care</b><br>10860 Ninth Line,Markham,ONL6B 1A8<br>📞 905-640-2950<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.38050399266937, -79.6969991165912], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Qualicare Home Care Simcoe County</b><br>10 Peter Street North,Orillia,ONL3V 1V7<br>📞 705-806-9977<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.30711146218659, -83.03457602074495], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>iAID Home Care</b><br>105-2475 McDougall Ave,Windsor,ONN8X 3N9<br>📞 1-855-424-3227<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.223150530371775, -76.4841756502912], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>aermed Home Care</b><br>1233 Eleanor Fulford Cres,Elizabethtown,ONK6V 7E2<br>📞 613-341-3955<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([46.49172618130276, -80.99398533527983], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Maple Leaf Home Healthcare</b><br>36 Lakeshore Dr,North Bay, ON,ONP1A 2A3<br>📞 705-303-8787<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([46.49151074847245, -80.99729741127202], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Gateway Community Home Care</b><br>52 Gertrude St W,North Bay,ONP1A 1J3<br>📞 705-471-1127<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([46.48481898923689, -80.99179336488359], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Quality Care Staffing</b><br>2924 Hwy 69 N,Val Caron,ONP3N 1J9<br>📞 705-805-4768<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([45.41211734881627, -75.69153357109299], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Champlain Community Care Access Centre</b><br>4200 Labelle St,Gloucester,ONK1J 1J8<br>📞 613-310-2222<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([48.37856183629171, -89.24058723438078], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Janzen\'s Home Health Care</b><br>504 Edward St N,Thunder Bay,ONP7C 4P9<br>📞 807-285-0186<br>Score: 0<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.253136755546514, -79.87859635572563], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>truscott i.d.a. pharmacy & adapt home health care</b><br>2425 truscott dr,mississauga,ONl5j 2b4<br>📞 905-822-1614<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.24652791711199, -79.87887194881378], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Qualicare Home Care Burlington & Oakville</b><br>4145 North Service Road,Burlington,ONL7L 4X6<br>📞 289-277-5411<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.258130750089734, -79.87474015643583], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Retire at Home Health Care Services</b><br>3228 Steeplechase Dr,Burlington,ONL7M 0C5<br>📞 289-337-4677<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.32721368060892, -79.79003496099185], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Personal Support Services</b><br>10 Pearl St N,Hamilton,ONL8R 2Y8<br>📞 905-777-0752<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.444762397497165, -80.49446138363523], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Nurse Next Door Senior Home Care Services - Guelph</b><br>64 Delhi Street,Guelph,ONN1E 4J7<br>📞 226-706-2485<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.444292376152546, -80.501054371134], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Waterloo Wellington Community Care Access Centre</b><br>141 Weber St S,Waterloo,ONN2J 2A9<br>📞 519-748-2222<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.73067359117934, -79.76396358120806], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Just Like Family Home Care - Halton Hills</b><br>66 Mill St,Georgetown,ONL7G 3H7<br>📞 905-703-4255<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.722163545303715, -79.76052601481723], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Alomcare Recruitment And Home Care Services Ltd</b><br>910-405 The West Mall,Etobicoke,ONM9C 5J1<br>📞 647-951-6197<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.73338733322698, -79.75476072417206], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Ameri Maid Home Care Service</b><br>7454 Airport Rd,Mississauga,ONL4T 2H5<br>📞 905-672-1309<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.00438539105341, -79.49396874048912], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Daily Home Care</b><br><br>📞 905-227-5354<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.995917710651725, -79.49839403498285], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Care First Personal Support Services</b><br>44 Riverside Dr,Welland,ONL3C 5E2<br>📞 905-735-4430<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.65236930707744, -79.3891524234835], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Senior Home Care by Angels</b><br>1111 Finch Avenue West,Toronto,ONM3J 2E5<br>📞 437-524-4545<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.6551342903522, -79.3895698507212], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Nurse Next Door Home Care Services</b><br>4202 Dundas St W,Etobicoke,ONM8X 1Y6<br>📞 416-232-2273<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.65930237325428, -79.37946376009127], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Mississauga Halton Community Care Access Centre</b><br>401 The West Mall,Etobicoke,ONM9C 5J5<br>📞 905-855-9090<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.65257903778112, -79.37532154934263], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Hannah Home Health Care Services</b><br>11 Maple Blvd,Etobicoke,ONM8V 2B7<br>📞 647-783-9240<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.654009681873, -79.38150706896877], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Agta Home Health Care & Nursing Inc</b><br>ONM3K 1E5<br>📞 416-630-0737<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.08275718247875, -79.07523631577114], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Sandra\'s Home Health Care Services Inc</b><br>103-73 Ontario St, (Suite C),St Catharines,ONL2R 5J5<br>📞 289-213-3431<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.085206408882, -79.0805818257315], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Right At Home Home Care St.Catharines And Niagar a</b><br>76 Lake St,St. Catharines,ONL2R 5X4<br>📞 905-634-7750<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.97676172518302, -81.2389541866245], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>South West Community Care Access Centre</b><br>395 Carrie St,Strathroy,ONN7G 3C9<br>📞 519-245-3028<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.990179803774986, -81.25180396657383], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>CCAC Southwest Community Care Access Centre</b><br>356 Oxford St W,London,ONN6H 1T3<br>📞 519-473-2222<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.98668924375779, -81.24706419306455], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>CCAC- Call South West Community Care Access Centre</b><br>70-1063 Talbot St,St Thomas,ONN5P 1G4<br>📞 519-473-9626<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.06852389043345, -79.455844480563], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Greenlafleur Home Care Services</b><br>210 Main St S,Newmarket,ONL3Y 3Z3<br>📞 416-805-6721<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.06455409715341, -79.46098375682502], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Right At Home Home Care Newmarket</b><br>510-16 Industrial Pky S,Aurora,ONL4G 0R4<br>📞 905-997-3731<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.90709911459814, -78.86095738506636], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Living At Home Care Services</b><br>3100 Garden St,Whitby,ONL1R 2G8<br>📞 905-926-2440<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.3801056278175, -79.68496356904916], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Daisy a Day Home Care</b><br>Innisfil,ON<br>📞 705-716-7613<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.38781830319125, -79.69106872449153], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Carrie\'s Helping Hands and Home Care Services</b><br>144 Queen St,Alliston,ONL9R 1K5<br>📞 705-890-0064<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.38560662405453, -79.69422236213587], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Qualicare Home Care Newmarket</b><br>130 Davis Drive,Newmarket,ONL3Y 2N1<br>📞 <br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.31557920990318, -78.31359022817259], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Vicmot Home & Health Care Services Incorporated</b><br>Upper-795 Lock St,Peterborough,ONK9J 2Z6<br>📞 705-813-8668<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.30630894173055, -78.32459523218373], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Companion Home Care</b><br><br>📞 705-243-1163<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.31856473235353, -83.04395963247559], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Nashell\'s In- Home Care Services</b><br>2955 Jefferson blvd,Windsor,ONN8T 3J1<br>📞 226-782-9426<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.321310344532876, -83.02663678691458], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Erie St Clair Community Care Access Centre (CCAC)</b><br>712 Richmond st,Amherstburg,ONN9V 3Z5<br>📞 1-855-326-9511<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.31454177736368, -83.03687054092823], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Amy\'s Helping Hands - Home Care Services and Adult Day Program for Seniors</b><br>6566 Hawthorne Drive,Windsor,ONN8T 1J9<br>📞 519-915-4370<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([42.31375837892566, -83.03145824524022], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Qualicare Home Care Windsor</b><br><br>📞 519-900-1699<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.232763237517105, -76.48467545850114], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Limestone Home Health Care Services</b><br>14-993 Princess St,Kingston,ONK7L 1H3<br>📞 613-767-4204<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([44.24007889454646, -76.48227408664972], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Tender Loving Companion Care Private Home Care</b><br>543 River Rd,Belleville,ONK0K 1V0<br>📞 613-920-3822<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([46.492468742355044, -80.99203708301444], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Nurse For Care - Home And Nursing Service</b><br>224-2390 Eglinton Ave East,Scarborough,ONM1K 2P5<br>📞 647-249-0554<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([48.37548115962634, -89.24929401880135], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Lakehead Home Health Care Outlet</b><br><br>📞 807-707-7247<br>Score: -5<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.25578830974626, -79.87586708995751], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>TheKey - Senior Home Care</b><br>351-300 Plains Rd. W,Burlington,ONL7T 0A2<br>📞 <br>Score: -10<br><small>📍 Approximate (city center)</small>');
+
+    L.circleMarker([43.098369200421246, -79.07601166742806], {
+        radius: 8,
+        fillColor: 'red',
+        color: '#333',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    }).addTo(map).bindPopup('<b>Alert Best Nursing and Home Care</b><br>St Catharines,ON<br>📞 1-866-959-9913<br>Score: -10<br><small>📍 Approximate (city center)</small>');
+
+    </script>
+</body>
+</html>
