@@ -31,7 +31,7 @@ except:
     pass
 
 OPENAI_API_KEY = env_vars.get('OPENAI_API_KEY') or os.getenv('OPENAI_API_KEY')
-OPENAI_MODEL = env_vars.get('OPENAI_MODEL', 'gpt-4o-mini')
+OPENAI_MODEL = env_vars.get('LLM_POLISH_MODEL') or 'gpt-5-nano'
 SUPABASE_URL = env_vars.get('SUPABASE_URL') or os.getenv('SUPABASE_URL')
 SUPABASE_KEY = env_vars.get('SUPABASE_KEY') or env_vars.get('SUPABASE_ANON_KEY') or os.getenv('SUPABASE_KEY')
 
@@ -43,33 +43,40 @@ def call_llm(prompt: str, system: str = None) -> str:
         messages.append({"role": "system", "content": system})
     messages.append({"role": "user", "content": prompt})
 
+    payload = {
+        "model": OPENAI_MODEL,
+        "messages": messages,
+    }
+    # GPT-5/o1 models have different parameter requirements
+    if "gpt-5" in OPENAI_MODEL or "o1" in OPENAI_MODEL:
+        # gpt-5-nano uses reasoning tokens internally, needs more headroom
+        payload["max_completion_tokens"] = 1000
+    else:
+        payload["max_tokens"] = 500
+        payload["temperature"] = 0
+
     resp = requests.post(
         "https://api.openai.com/v1/chat/completions",
         headers={
             "Authorization": f"Bearer {OPENAI_API_KEY}",
             "Content-Type": "application/json"
         },
-        json={
-            "model": OPENAI_MODEL,
-            "messages": messages,
-            "temperature": 0,
-            "max_tokens": 500
-        },
+        json=payload,
         timeout=30
     )
     resp.raise_for_status()
     return resp.json()["choices"][0]["message"]["content"]
 
 
-SYSTEM_PROMPT = """You are a data quality assistant. Your job is to validate and clean contact information.
+SYSTEM_PROMPT = """You are a data quality assistant validating contact information.
 
 RULES:
-1. Only return valid human names (First Last format)
-2. REJECT organization names, program names, locations, titles without names
-3. For Chinese rep candidates, identify the Chinese staff member by surname
+1. Return FULL names (First Last), never just surnames
+2. REJECT organization names, program names, locations
+3. For Chinese rep candidates, identify the Chinese staff member and return their FULL name
 4. Return JSON only, no explanations
 
-Common Chinese surnames: Chan, Chen, Cheung, Chow, Chu, Fung, Ho, Huang, Lam, Lee, Leung, Li, Lin, Liu, Lo, Mak, Ng, Tang, Tse, Wong, Wu, Yang, Yip, Yu, Zhang, Zhao, Zhou"""
+Chinese surnames: Chan, Chen, Cheung, Chow, Chu, Fung, Ho, Huang, Lam, Lee, Leung, Li, Lin, Liu, Lo, Mak, Ng, Tang, Tse, Wong, Wu, Yang, Yip, Yu, Zhang, Zhao, Zhou, Tsang, Yan"""
 
 
 def polish_lead(lead: dict) -> dict:
@@ -83,39 +90,43 @@ def polish_lead(lead: dict) -> dict:
     chinese_reasons = lead.get('chinese_rep_reasons', [])
     sales_brief = lead.get('sales_brief', '')
 
-    # Build prompt
-    prompt = f"""Facility: {name}
+    # Build simpler prompt for gpt-5-nano
+    dm_names = [d.get('name', '') for d in decision_makers[:5] if d.get('name')]
 
-Current contact_name: {contact_name}
-Current contact_role: {contact_role}
-Decision makers list: {json.dumps(decision_makers)}
-Chinese rep candidate: {chinese_rep}
-Chinese rep reasons: {json.dumps(chinese_reasons)}
-
-Tasks:
-1. Is contact_name a valid human name? (not org name, not program, not location)
-2. If invalid, find best valid name from decision_makers list
-3. If chinese_rep=true, identify the Chinese staff member and make them primary contact
-
-Return JSON:
-{{
-  "contact_name_valid": true/false,
-  "new_contact_name": "name or null",
-  "new_contact_role": "role or null",
-  "chinese_staff_name": "name if chinese_rep else null",
-  "chinese_staff_role": "role if chinese_rep else null"
-}}"""
+    if chinese_rep:
+        # For Chinese rep, find the Chinese staff
+        prompt = f"""Contact: {contact_name}
+Staff: {', '.join(dm_names)}
+This is a Chinese rep lead. Chinese surnames: Lee, Chan, Chen, Wong, Wu, Li, Lin, Liu, Tsang, Yan, Ng, Tang, Ho.
+Who is the Chinese staff member? Return their FULL name.
+JSON: {{"chinese_staff": "full name or null"}}"""
+    else:
+        # Just validate the contact name
+        prompt = f"""Is "{contact_name}" a valid human name (First Last format)?
+Not valid: organization names, program names, locations, partial titles.
+JSON: {{"valid": true/false}}"""
 
     try:
         response = call_llm(prompt, SYSTEM_PROMPT)
         # Extract JSON from response
         json_match = re.search(r'\{[^}]+\}', response, re.DOTALL)
         if json_match:
-            result = json.loads(json_match.group())
+            raw_result = json.loads(json_match.group())
+
+            # Normalize result format
+            result = {}
+            if chinese_rep:
+                chinese_staff = raw_result.get('chinese_staff')
+                if chinese_staff and chinese_staff != contact_name:
+                    result['chinese_staff_name'] = chinese_staff
+            else:
+                result['contact_name_valid'] = raw_result.get('valid', True)
+
             return {
                 'id': lead_id,
                 'name': name,
                 'original_contact': contact_name,
+                'chinese_rep': chinese_rep,
                 'result': result
             }
     except Exception as e:
@@ -205,13 +216,19 @@ def main():
                 r = result['result']
                 updates = {}
 
-                # If current contact is invalid and we have a new one
-                if not r.get('contact_name_valid') and r.get('new_contact_name'):
-                    updates['contact_name'] = r['new_contact_name']
-                    updates['contact_role'] = r.get('new_contact_role')
+                # If current contact is invalid
+                if not r.get('contact_name_valid'):
+                    if r.get('new_contact_name'):
+                        # Replace with valid name
+                        updates['contact_name'] = r['new_contact_name']
+                        updates['contact_role'] = r.get('new_contact_role')
+                    elif result.get('original_contact'):
+                        # No valid replacement - clear the garbage
+                        updates['contact_name'] = None
+                        updates['contact_role'] = None
 
-                # If Chinese rep and we identified Chinese staff
-                if r.get('chinese_staff_name'):
+                # If Chinese rep and we identified Chinese staff (different from current)
+                if r.get('chinese_staff_name') and r['chinese_staff_name'] != result.get('original_contact'):
                     updates['contact_name'] = r['chinese_staff_name']
                     updates['contact_role'] = r.get('chinese_staff_role')
 
