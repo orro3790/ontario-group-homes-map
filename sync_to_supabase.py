@@ -331,6 +331,11 @@ def main():
     # Geocode addresses
     if not args.skip_geocoding:
         rows = geocode_rows(rows)
+    else:
+        # Remove lat/lon from rows so we don't overwrite existing coordinates
+        for row in rows:
+            row.pop("lat", None)
+            row.pop("lon", None)
 
     # Count stats
     chinese_candidates = sum(1 for r in rows if r["chinese_rep_candidate"])
