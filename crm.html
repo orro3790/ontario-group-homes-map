@@ -400,6 +400,10 @@
                             <h3>Rep Assignment</h3>
                             <div class="filters" id="rep-filters"></div>
                         </div>
+                        <div class="sidebar-section">
+                            <h3>Filter by Score</h3>
+                            <div class="filters" id="score-filters"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -656,7 +660,7 @@
         let markers = {};
         let map;
         let currentLeadId = null;
-        let filters = { status: 'all', priority: 'all', search: '', chineseRep: false };
+        let filters = { status: 'all', priority: 'all', search: '', chineseRep: false, minScore: 0 };
 
         const STATUSES = ['new', 'contacted', 'qualified', 'proposal', 'negotiation', 'won', 'lost'];
         const STATUS_LABELS = {
@@ -669,12 +673,12 @@
         };
         const PRIORITIES = ['low', 'medium', 'high', 'urgent'];
 
-        // Score-based colors for map pins
+        // Score-based colors for map pins (green=best, red=worst)
         function scoreToColor(score) {
-            if (score >= 50) return '#dc3545'; // red - urgent/hot
-            if (score >= 40) return '#fd7e14'; // orange - high
+            if (score >= 50) return '#28a745'; // green - best
+            if (score >= 40) return '#17a2b8'; // teal - good
             if (score >= 30) return '#ffc107'; // yellow - medium
-            return '#6c757d'; // gray - low
+            return '#dc3545'; // red - low/worst
         }
 
         // ============================================
@@ -924,6 +928,19 @@
                 <div class="filter-chip ${!filters.chineseRep ? 'active' : ''}" onclick="setFilter('chineseRep', false)">All Reps</div>
                 <div class="filter-chip ${filters.chineseRep ? 'active' : ''}" onclick="setFilter('chineseRep', true)" style="${filters.chineseRep ? 'background: #e74c3c; border-color: #e74c3c;' : ''}">🇨🇳 Chinese Rep (${chineseCount})</div>
             `;
+            // Score filters
+            const scoreRanges = [
+                { min: 0, label: 'All', color: '' },
+                { min: 50, label: '50+ (Best)', color: '#28a745' },
+                { min: 40, label: '40+', color: '#17a2b8' },
+                { min: 30, label: '30+', color: '#ffc107' },
+            ];
+            document.getElementById('score-filters').innerHTML = scoreRanges.map(r => `
+                <div class="filter-chip ${filters.minScore === r.min ? 'active' : ''}"
+                     onclick="setFilter('minScore', ${r.min})"
+                     style="${filters.minScore === r.min && r.color ? 'background:' + r.color + ';border-color:' + r.color + ';' : ''}"
+                >${r.label}</div>
+            `).join('');
         }
 
         function setFilter(type, value) {
@@ -941,6 +958,7 @@
                 if (filters.status !== 'all' && l.status !== filters.status) return false;
                 if (filters.priority !== 'all' && l.priority !== filters.priority) return false;
                 if (filters.chineseRep && !l.chinese_rep_candidate) return false;
+                if (filters.minScore > 0 && (l.score || 0) < filters.minScore) return false;
                 if (filters.search && !l.name.toLowerCase().includes(filters.search) &&
                     !l.city?.toLowerCase().includes(filters.search)) return false;
                 return true;
