@@ -465,6 +465,12 @@
                     <label>Contact Email</label>
                     <input type="email" id="panel-contact-email" placeholder="email@example.com" />
                 </div>
+                <div class="form-group">
+                    <label>Website</label>
+                    <div id="panel-website-container">
+                        <a id="panel-website" href="#" target="_blank" style="color: #0066cc; text-decoration: none; word-break: break-all;">No website</a>
+                    </div>
+                </div>
             </div>
 
             <!-- Status & Priority -->
@@ -1053,6 +1059,18 @@
             document.getElementById('panel-contact-name').value = lead.contact_name || '';
             document.getElementById('panel-contact-role').value = lead.contact_role || '';
             document.getElementById('panel-contact-email').value = lead.contact_email || '';
+
+            // Website link
+            const websiteEl = document.getElementById('panel-website');
+            if (lead.website) {
+                websiteEl.href = lead.website;
+                websiteEl.textContent = lead.website.replace(/^https?:\/\//, '').substring(0, 50) + (lead.website.length > 60 ? '...' : '');
+                websiteEl.style.pointerEvents = 'auto';
+            } else {
+                websiteEl.href = '#';
+                websiteEl.textContent = 'No website';
+                websiteEl.style.pointerEvents = 'none';
+            }
             document.getElementById('panel-status').value = lead.status;
             document.getElementById('panel-priority').value = lead.priority || 'medium';
             document.getElementById('panel-followup').value = lead.next_followup || '';
