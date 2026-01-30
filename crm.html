@@ -417,8 +417,16 @@
                 <div class="tasks-container" style="max-width: 1200px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <h2>All Leads (<span id="all-leads-count">0</span>)</h2>
-                        <div class="search-box" style="margin: 0; width: 300px;">
-                            <input type="text" placeholder="Search..." oninput="handleAllLeadsSearch(this.value)" />
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <select id="all-leads-sort" onchange="handleAllLeadsSort(this.value)" style="padding: 8px; border-radius: 4px; border: 1px solid #ddd;">
+                                <option value="score-desc">Score (High to Low)</option>
+                                <option value="score-asc">Score (Low to High)</option>
+                                <option value="name-asc">Name (A-Z)</option>
+                                <option value="name-desc">Name (Z-A)</option>
+                            </select>
+                            <div class="search-box" style="margin: 0; width: 300px;">
+                                <input type="text" placeholder="Search..." oninput="handleAllLeadsSearch(this.value)" />
+                            </div>
                         </div>
                     </div>
                     <div id="all-leads-list"></div>
@@ -660,6 +668,14 @@
             proposal: '#fd7e14', negotiation: '#6f42c1', won: '#28a745', lost: '#dc3545'
         };
         const PRIORITIES = ['low', 'medium', 'high', 'urgent'];
+
+        // Score-based colors for map pins
+        function scoreToColor(score) {
+            if (score >= 50) return '#dc3545'; // red - urgent/hot
+            if (score >= 40) return '#fd7e14'; // orange - high
+            if (score >= 30) return '#ffc107'; // yellow - medium
+            return '#6c757d'; // gray - low
+        }
 
         // ============================================
         // UTILITIES
@@ -957,7 +973,7 @@
                 if (!lead.lat || !lead.lon) return;
                 const marker = L.circleMarker([lead.lat, lead.lon], {
                     radius: 8,
-                    fillColor: STATUS_COLORS[lead.status] || '#6c757d',
+                    fillColor: scoreToColor(lead.score),
                     color: '#fff',
                     weight: 2,
                     opacity: 1,
@@ -1016,9 +1032,15 @@
         // ALL LEADS VIEW
         // ============================================
         let allLeadsSearch = '';
+        let allLeadsSort = 'score-desc';
 
         function handleAllLeadsSearch(value) {
             allLeadsSearch = value.toLowerCase();
+            renderAllLeads();
+        }
+
+        function handleAllLeadsSort(value) {
+            allLeadsSort = value;
             renderAllLeads();
         }
 
@@ -1031,10 +1053,22 @@
                     l.phone?.includes(allLeadsSearch)
                 );
             }
+
+            // Sort leads
+            filtered = [...filtered].sort((a, b) => {
+                switch (allLeadsSort) {
+                    case 'score-desc': return (b.score || 0) - (a.score || 0);
+                    case 'score-asc': return (a.score || 0) - (b.score || 0);
+                    case 'name-asc': return (a.name || '').localeCompare(b.name || '');
+                    case 'name-desc': return (b.name || '').localeCompare(a.name || '');
+                    default: return 0;
+                }
+            });
+
             document.getElementById('all-leads-count').textContent = filtered.length;
             document.getElementById('all-leads-list').innerHTML = filtered.map(lead => `
                 <div class="task-item" onclick="openLead(${parseInt(lead.id)})" style="cursor: pointer;" role="button" tabindex="0">
-                    <div style="width: 10px; height: 10px; border-radius: 50%; background: ${STATUS_COLORS[lead.status] || '#6c757d'};"></div>
+                    <div style="width: 10px; height: 10px; border-radius: 50%; background: ${scoreToColor(lead.score)};"></div>
                     <div class="task-info">
                         <div class="subject">${escapeHtml(lead.name)}</div>
                         <div class="due-date">${escapeHtml(lead.city) || ''} | ${escapeHtml(lead.phone) || 'No phone'} | Score: ${parseInt(lead.score) || 0}</div>

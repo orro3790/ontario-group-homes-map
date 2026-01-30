@@ -128,6 +128,19 @@ def load_dossiers(path: Path) -> list[dict]:
     return dossiers
 
 
+def score_to_priority(score: int) -> str:
+    """Convert score to priority level."""
+    if score is None:
+        return "medium"
+    if score >= 50:
+        return "urgent"
+    if score >= 40:
+        return "high"
+    if score >= 30:
+        return "medium"
+    return "low"
+
+
 def is_valid_person_name(name: str) -> bool:
     """Check if a string looks like a real person's name."""
     if not name:
@@ -251,6 +264,7 @@ def dossier_to_row(d: dict) -> dict:
 
         # Enrichment scores
         "score": d.get("overall_priority", 0),
+        "priority": score_to_priority(d.get("overall_priority", 0)),
         "overall_priority": d.get("overall_priority"),
         "independence_score": d.get("independence_score"),
         "contactability_score": d.get("contactability_score"),
