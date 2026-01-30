@@ -397,10 +397,6 @@
                             <div class="filters" id="priority-filters"></div>
                         </div>
                         <div class="sidebar-section">
-                            <h3>Rep Assignment</h3>
-                            <div class="filters" id="rep-filters"></div>
-                        </div>
-                        <div class="sidebar-section">
                             <h3>Filter by Score</h3>
                             <div class="filters" id="score-filters"></div>
                         </div>
@@ -561,7 +557,6 @@
             <div class="panel-section" id="dossier-section" style="display: none;">
                 <h4 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                     Sales Dossier
-                    <span id="chinese-rep-badge" style="display: none; background: #e74c3c; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">🇨🇳 Chinese Rep</span>
                 </h4>
                 <div id="panel-languages" style="font-size: 12px; color: #666; margin-bottom: 12px;"></div>
 
@@ -660,7 +655,7 @@
         let markers = {};
         let map;
         let currentLeadId = null;
-        let filters = { status: 'all', priority: 'all', search: '', chineseRep: false, minScore: 0 };
+        let filters = { status: 'all', priority: 'all', search: '', minScore: 0 };
 
         const STATUSES = ['new', 'contacted', 'qualified', 'proposal', 'negotiation', 'won', 'lost'];
         const STATUS_LABELS = {
@@ -879,10 +874,9 @@
             const scoreClass = lead.score >= 45 ? '' : lead.score >= 35 ? 'medium' : 'low';
             const priorityClass = lead.priority === 'high' || lead.priority === 'urgent' ? `priority-${lead.priority}` : '';
             const followup = lead.next_followup ? formatFollowup(lead.next_followup) : '';
-            const chineseTag = lead.chinese_rep_candidate ? '<span style="background:#e74c3c;color:white;padding:1px 4px;border-radius:3px;font-size:10px;margin-left:6px;" title="Chinese Rep">🇨🇳</span>' : '';
             return `
                 <div class="lead-card ${priorityClass}" onclick="openLead(${parseInt(lead.id)})" role="button" tabindex="0">
-                    <div class="name">${escapeHtml(lead.name)}${chineseTag}</div>
+                    <div class="name">${escapeHtml(lead.name)}</div>
                     <div class="city">${escapeHtml(lead.city) || 'Unknown'}</div>
                     <div class="meta">
                         <span class="score ${scoreClass}">${parseInt(lead.score) || 0}</span>
@@ -922,12 +916,6 @@
                     <div class="filter-chip ${filters.priority === p ? 'active' : ''}" onclick="setFilter('priority', '${p}')">${p.charAt(0).toUpperCase() + p.slice(1)}</div>
                 `).join('')}
             `;
-            // Rep assignment filters
-            const chineseCount = leads.filter(l => l.chinese_rep_candidate).length;
-            document.getElementById('rep-filters').innerHTML = `
-                <div class="filter-chip ${!filters.chineseRep ? 'active' : ''}" onclick="setFilter('chineseRep', false)">All Reps</div>
-                <div class="filter-chip ${filters.chineseRep ? 'active' : ''}" onclick="setFilter('chineseRep', true)" style="${filters.chineseRep ? 'background: #e74c3c; border-color: #e74c3c;' : ''}">🇨🇳 Chinese Rep (${chineseCount})</div>
-            `;
             // Score filters
             const scoreRanges = [
                 { min: 0, label: 'All', color: '' },
@@ -957,7 +945,6 @@
             return leads.filter(l => {
                 if (filters.status !== 'all' && l.status !== filters.status) return false;
                 if (filters.priority !== 'all' && l.priority !== filters.priority) return false;
-                if (filters.chineseRep && !l.chinese_rep_candidate) return false;
                 if (filters.minScore > 0 && (l.score || 0) < filters.minScore) return false;
                 if (filters.search && !l.name.toLowerCase().includes(filters.search) &&
                     !l.city?.toLowerCase().includes(filters.search)) return false;
@@ -1178,15 +1165,6 @@
                 langEl.style.display = 'block';
             } else {
                 langEl.style.display = 'none';
-            }
-
-            // Chinese rep badge
-            const badge = document.getElementById('chinese-rep-badge');
-            if (lead.chinese_rep_candidate) {
-                badge.style.display = 'inline-block';
-                badge.title = 'Confidence: ' + (lead.chinese_rep_confidence || 'unknown');
-            } else {
-                badge.style.display = 'none';
             }
 
             // Brief
