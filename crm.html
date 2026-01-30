@@ -768,6 +768,11 @@
         }
 
         async function checkAuth() {
+            // Demo mode bypass: add ?demo=1 to URL
+            if (new URLSearchParams(window.location.search).has('demo')) {
+                showApp();
+                return;
+            }
             const { data: { session } } = await db.auth.getSession();
             if (session) showApp();
         }
@@ -778,8 +783,9 @@
             showLoading();
 
             try {
+                const isDemo = new URLSearchParams(window.location.search).has('demo');
                 const { data: { user } } = await db.auth.getUser();
-                document.getElementById('user-email').textContent = user?.email || '';
+                document.getElementById('user-email').textContent = isDemo ? 'Demo Mode' : (user?.email || '');
 
                 await loadData();
                 initMap();
